@@ -7,6 +7,7 @@ function App() {
   const [role, setRole] = useState("PATIENT");
   const [message, setMessage] = useState("");
   const [loggedInRole, setLoggedInRole] = useState("");
+  const [mode, setMode] = useState<"login" | "register">("login");
 
   async function register() {
     const response = await fetch("http://localhost:8080/auth/register", {
@@ -17,7 +18,8 @@ function App() {
       body: JSON.stringify({ email, password, role }),
     });
 
-    setMessage(response.ok ? "Registrierung erfolgreich" : "Registrierung fehlgeschlagen");
+      const text = await response.text();
+      setMessage(text);
   }
 
     async function login() {
@@ -47,40 +49,62 @@ function App() {
         return <h1>Hallo Therapeut</h1>;
     }
 
-  return (
-      <div>
-          <br/>
-          <input
-              type="email"
-              placeholder="E-Mail"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-          />
+    return (
+        <div>
+            <h1>{mode === "login" ? "Einloggen" : "Registrieren"}</h1>
 
-          <br/>
+            <input
+                type="email"
+                placeholder="E-Mail"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+            />
 
-          <input
-              type="password"
-              placeholder="Passwort"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-          />
+            <br />
 
-          <br/>
+            <input
+                type="password"
+                placeholder="Passwort"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+            />
 
-          <select value={role} onChange={(e) => setRole(e.target.value)}>
-              <option value="PATIENT">Patient</option>
-              <option value="THERAPIST">Therapeut</option>
-          </select>
+            <br />
 
-          <br/>
+            {mode === "register" && (
+                <>
+                    <select value={role} onChange={(e) => setRole(e.target.value)}>
+                        <option value="PATIENT">Patient</option>
+                        <option value="THERAPIST">Therapeut</option>
+                    </select>
 
-          <button onClick={register}>Registrieren</button>
-          <button onClick={login}>Einloggen</button>
+                    <br />
+                </>
+            )}
 
-          <p>{message}</p>
-      </div>
-  );
+            {mode === "login" ? (
+                <button onClick={login}>Einloggen</button>
+            ) : (
+                <button onClick={register}>Registrieren</button>
+            )}
+
+            <br />
+
+            <p>
+                {mode === "login"
+                    ? "Noch keinen Account?"
+                    : "Schon einen Account?"}
+            </p>
+
+            <button onClick={() => setMode(mode === "login" ? "register" : "login")}>
+                {mode === "login"
+                    ? "Registrieren"
+                    : "Einloggen"}
+            </button>
+
+            <p>{message}</p>
+        </div>
+    );
 }
 
 export default App;

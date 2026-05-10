@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = {"http://localhost:5173"})
 public class UserController {
     private final UserService userService;
 
@@ -15,8 +16,15 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public User register(@RequestBody User user) {
-        return userService.register(user);
+    public String register(@RequestBody User user) {
+
+        try {
+            userService.register(user);
+            return "Registrierung erfolgreich";
+
+        } catch (RuntimeException e) {
+            return e.getMessage();
+        }
     }
 
     @PostMapping("/login")
