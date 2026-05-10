@@ -1,0 +1,7 @@
+/Users/sarah/university_project/app-thera/backend/src/main/java/com/example/demo/DemoApplication.java
+/Users/sarah/university_project/app-thera/backend/src/main/java/com/example/demo/config/SecurityConfig.java
+/Users/sarah/university_project/app-thera/backend/src/main/java/com/example/demo/controller/UserController.java
+/Users/sarah/university_project/app-thera/backend/src/main/java/com/example/demo/entity/Role.java
+/Users/sarah/university_project/app-thera/backend/src/main/java/com/example/demo/entity/User.java
+/Users/sarah/university_project/app-thera/backend/src/main/java/com/example/demo/repository/UserRepository.java
+/Users/sarah/university_project/app-thera/backend/src/main/java/com/example/demo/service/UserService.java
