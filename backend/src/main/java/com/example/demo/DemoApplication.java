@@ -21,29 +21,39 @@ public class DemoApplication {
 								PasswordEncoder passwordEncoder) {
 
 		return args -> {
-
-			// PATIENT
-			if (userRepository.findByEmail("patient@test.de").isEmpty()) {
-
-				User patient = new User();
-
-				patient.setEmail("patient@test.de");
-				patient.setPassword(passwordEncoder.encode("123456"));
-				patient.setRole(Role.PATIENT);
-
-				userRepository.save(patient);
-			}
-
 			// THERAPIST
-			if (userRepository.findByEmail("therapist@test.de").isEmpty()) {
+			User therapist = null;
+			if (userRepository.findByEmail("therapist.demo@app.de").isEmpty()) {
 
-				User therapist = new User();
+				therapist = new User();
 
-				therapist.setEmail("therapist@test.de");
-				therapist.setPassword(passwordEncoder.encode("123456"));
+				therapist.setEmail("therapist.demo@app.de");
+				therapist.setPassword(passwordEncoder.encode("TherapistDemo2026!"));
 				therapist.setRole(Role.THERAPIST);
 
 				userRepository.save(therapist);
+
+			} else {
+				therapist = userRepository
+						.findByEmail("therapist.demo@app.de")
+						.get();
+			}
+
+			// 10 PATIENTS
+			for (int i = 1; i <= 10; i++) {
+				String email = "patient" + i + ".demo@app.de"; 	// für 1.Patient: patient1.demo@app.de
+
+				if (userRepository.findByEmail(email).isEmpty()) {
+					User patient = new User();
+
+					patient.setEmail(email);
+					patient.setPassword(passwordEncoder.encode("PatientDemo" + i + "!")); // für 1.Patient: PatientDemo1!
+					patient.setRole(Role.PATIENT);
+
+					// Beziehung setzen
+					patient.setTherapist(therapist);
+					userRepository.save(patient);
+				}
 			}
 		};
 	}

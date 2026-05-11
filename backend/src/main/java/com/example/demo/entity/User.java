@@ -1,6 +1,9 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 @Table(name = "users")
@@ -10,12 +13,18 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "E-Mail darf nicht leer sein")
+    @Email(message = "Ungültige E-Mail")
     private String email;
 
+    @NotBlank(message = "Passwort darf nicht leer sein")
     private String password;
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @ManyToOne
+    private User therapist;
 
     public Long getId() {
         return id;
@@ -47,5 +56,13 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public User getTherapist() {
+        return therapist;
+    }
+
+    public void setTherapist(User therapist) {
+        this.therapist = therapist;
     }
 }
