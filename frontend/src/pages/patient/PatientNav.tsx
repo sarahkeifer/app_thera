@@ -7,10 +7,9 @@ return (
         <NavLink to="/patient/calendar">Kalender</NavLink>
         <NavLink to="/patient/moodview">Stimmungsboard</NavLink>
         <NavLink to="/patient/notesview">Notizen</NavLink>
-        <NavLink to="/patient/taskview">Aufgabenpool</NavLink>
+        <NavLink to="/patient/taskview">Lerninhalte</NavLink>
     </nav>
 );
 }
-
 
 

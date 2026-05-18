@@ -1,7 +1,7 @@
 export default function TaskView(){
     return(
         <div>
-            <h1>Task Overview</h1>
+            <h1>Psychoedukation und Aufgaben</h1>
         </div>
     )
 }
