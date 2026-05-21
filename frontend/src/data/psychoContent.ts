@@ -112,14 +112,117 @@ export const adhsContent = {
     ],
 };
 
-export const verhaltenstherapieContent = {
-    title: "Verhaltenstherapie",
+export const KVTherapieContent = {
+    title: "Kognitive Verhaltenstherapie (KVT)",
     boxes: [
         {
-            title: "Wie sie hilft",
+            title: "Definition",
+            text: "Die kognitive Verhaltenstherapie ist eine Psychotherapieform. Sie hilft dabei, negative Gedanken und problematisches Verhalten zu erkennen und zu verändern.",
+
+        },
+        {
+            title: "Ziele der Therapie",
             points: [
-                "Gedanken erkennen",
-                "Verhalten verändern",
+                "Bessere Selbstkontrolle",
+                "Gefühle regulieren",
+                "Probleme lösen",
+                "Alltag strukturieren",
+                "Konzentration verbessern",
+            ],
+        },
+        {
+            title: "Methoden",
+            points: [
+                "Gespräche mit dem Therapeuten",
+                "Übungen für den Alltag",
+                "Training von Aufmerksamkeit und Organisation",
+                "Gedanken hinterfragen",
+            ],
+        },
+        {
+            title: "Einsatz bei ADHS",
+            points: [
+                "Impulsives Verhalten zu kontrollieren",
+                "Aufgaben besser zu planen",
+                "Stress zu reduzieren",
+                "Alltag besser zu organisieren.",
+            ],
+        },
+    ],
+};
+
+export const SuchttherapieContent = {
+    title: "Suchttherapie",
+    boxes: [
+        {
+            title: "Definition",
+            text: "Suchttherapie ist eine Therapieform zur Behandlung von Alkoholabhängigkeit und anderen Suchterkrankungen. Sie hilft Betroffenen, den Konsum zu reduzieren oder abstinent zu leben und den Alltag wieder zu stabilisieren.",
+        },
+        {
+            title: "Ziele der Therapie",
+            points: [
+                "Alkoholabhängigkeit behandeln",
+                "Rückfälle vermeiden",
+                "Körperliche und psychische Gesundheit verbessern",
+                "Soziale Beziehungen stärken",
+                "Selbstständigen Alltag fördern",
+            ],
+        },
+        {
+            title: "Methoden",
+            points: [
+                "Entzugsbehandlung",
+                "Einzel- und Gruppengespräche",
+                "Verhaltenspläne",
+                "Unterstützung durch Angehörige",
+            ],
+        },
+        {
+            title: "Einsatz bei alkoholbezogenen Störungen",
+            points: [
+                "psychotherapeutischer Behandlung",
+                "Medizinischer Betreuung",
+                "Sozialer Unterstützung",
+                "Langfristiger Nachsorge",
+            ],
+        },
+    ],
+};
+
+
+export const DBTherapieContent = {
+    title: "Dialektisch-Behaviorale Therapie (DBT)",
+    boxes: [
+        {
+            title: "Definition",
+            text: "Dialektisch-Behaviorale Therapie (DBT) ist eine spezielle Therapieform für Menschen mit einer Borderline-Persönlichkeitsstörung. Sie kombiniert Verhaltenstherapie mit Übungen zur Gefühlsregulation und Achtsamkeit.",
+        },
+        {
+            title: "Ziele der Therapie",
+            points: [
+                "Starke Gefühle besser kontrollieren",
+                "Impulsives Verhalten reduzieren",
+                "Selbstverletzungen vermeiden",
+                "Beziehungen verbessern",
+                "Stress besser bewältigen",
+            ],
+        },
+        {
+            title: "Methoden",
+            points: [
+                "Einzeltherapie",
+                "Gruppentraining",
+                "Achtsamkeitsübungen",
+                "Training sozialer Fähigkeiten",
+                "Übungen zur Emotionsregulation",
+            ],
+        },
+        {
+            title: "Einsatz bei Borderline-Persönlichkeitsstörung",
+            points: [
+                "Gefühle besser zu steuern",
+                "Beziehungen zu stabilisieren",
+                "Selbstschädigendes Verhalten zu verringern",
             ],
         },
     ],

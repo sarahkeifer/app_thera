@@ -4,6 +4,7 @@ import {
     depressionContent,
     angstContent,
     adhsContent,
+    KVTherapieContent, SuchttherapieContent, DBTherapieContent,
 } from "../../data/psychoContent";
 
 type TaskFilter = "all" | "psychoedukation" | "aktivitaet" | "reflexion";
@@ -83,6 +84,10 @@ export default function TaskView() {
                                         if (card.title === "Krankheiten") {
                                             setSelectedCategory("krankheiten");
                                         }
+
+                                        if (card.title === "Therapieformen") {
+                                            setSelectedCategory("therapieformen");
+                                        }
                                     }}
                                 >
                                     <h2 className="task-card-title">
@@ -125,6 +130,39 @@ export default function TaskView() {
                         </div>
                     )}
 
+                    {selectedCategory === "therapieformen" && (
+                        <div className="task-card-list">
+
+                            <div
+                                className="task-card"
+                                onClick={() => setSelectedCategory("Kognitive Verhaltenstherapie (KVT)")}
+                            >
+                                <h2 className="task-card-title">
+                                    Kognitive Verhaltenstherapie (KVT)
+                                </h2>
+                            </div>
+
+                            <div
+                                className="task-card"
+                                onClick={() => setSelectedCategory("SuchttherapieContent")}
+                            >
+                                <h2 className="task-card-title">
+                                    Suchttherapie
+                                </h2>
+                            </div>
+
+                            <div
+                                className="task-card"
+                                onClick={() => setSelectedCategory("DBTherapieContent")}
+                            >
+                                <h2 className="task-card-title">
+                                    Dialektisch-Behaviorale Therapie (DBT)
+                                </h2>
+                            </div>
+
+                        </div>
+                    )}
+
                     {selectedCategory === "depression" && (
                         <PsychoCard
                             title={depressionContent.title}
@@ -146,6 +184,28 @@ export default function TaskView() {
                             title={adhsContent.title}
                             boxes={adhsContent.boxes}
                             source=" ICD-10, Deutsche Gesellschaft für Psychiatrie und Psychotherapie"
+                        />
+                    )}
+
+                    {selectedCategory === "Kognitive Verhaltenstherapie (KVT)" && (
+                        <PsychoCard
+                            title={KVTherapieContent.title}
+                            boxes={KVTherapieContent.boxes}
+                            source="Deutsche Gesellschaft für Psychiatrie und Psychotherapie"
+                        />
+                    )}
+                    {selectedCategory === "SuchttherapieContent" && (
+                        <PsychoCard
+                            title={SuchttherapieContent.title}
+                            boxes={SuchttherapieContent.boxes}
+                            source="Deutsche Gesellschaft für Psychiatrie und Psychotherapie"
+                        />
+                    )}
+                    {selectedCategory === "DBTherapieContent" && (
+                        <PsychoCard
+                            title={DBTherapieContent.title}
+                            boxes={DBTherapieContent.boxes}
+                            source="Deutsche Gesellschaft für Psychiatrie und Psychotherapie"
                         />
                     )}
                 </>

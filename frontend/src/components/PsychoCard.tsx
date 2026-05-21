@@ -1,3 +1,6 @@
+import meditationImage from "../assets/meditation.jpg";
+import herzImage from "../assets/herz.jpg";
+
 type InfoBox = {
     title: string;
     points?: string[];
@@ -13,7 +16,26 @@ type PsychoCardProps = {
 export default function PsychoCard({ title, boxes, source  }: PsychoCardProps) {
     return (
         <div className="psycho-card">
-            <h2 className="psycho-card-title">{title}</h2>
+            <div className="psycho-card-header">
+
+                <img
+                    src={meditationImage as string}
+                    alt="Meditation"
+                    className="psycho-card-image"
+                />
+
+                <h2 className="psycho-card-title">
+                    {title}
+                </h2>
+
+                <img
+                    src={herzImage as string}
+                    alt="Herz"
+                    className="psycho-card-heart"
+                />
+
+            </div>
+
 
             <div className="psycho-box-grid">
                 {boxes.map((box) => (
@@ -36,7 +58,7 @@ export default function PsychoCard({ title, boxes, source  }: PsychoCardProps) {
             </div>
             {source && (
                 <p className="psycho-source">
-                    Quellen:  {source}
+                    Quelle(n) : {source}
                 </p>
             )}
         </div>
