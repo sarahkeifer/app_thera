@@ -196,11 +196,19 @@ code {
   margin-bottom: 20px;
   resize: none;
   box-sizing: border-box;
+  font-size: 18px;
 }
 
 .mood-dialog-actions {
   display: flex;
   gap: 12px;
+}
+
+.mood-error {
+  color: #dc2626;
+  font-size: 15px;
+  margin-bottom: 16px;
+  text-align: center;
 }
 
 .mood-cancel-button,
@@ -220,4 +228,63 @@ code {
 .mood-save-button {
   background: #aa3bff;
   color: white;
+}
+
+.mood-history {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 32px;
+  padding: 24px;
+  margin-top: 32px;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+
+.mood-history h2 {
+  text-align: left;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.mood-history-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background: #f8fafc;
+  border-radius: 24px;
+  padding: 16px;
+  margin-bottom: 14px;
+  text-align: left;
+}
+
+.mood-history-emoji {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.mood-history-item > div {
+  flex: 1;
+}
+
+.mood-history-date {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+
+.mood-history-label {
+  font-size: 14px;
+  color: #64748b;
+  margin-bottom: 6px;
+}
+
+.mood-history-note {
+  font-size: 16px;
+  color: #475569;
+}
+
+.mood-history-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }

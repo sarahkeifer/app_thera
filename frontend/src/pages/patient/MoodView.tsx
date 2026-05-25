@@ -1,43 +1,59 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const moods = [
-    { emoji: '🌞', label: 'Leicht', value: 5, color: 'bg-yellow-100 border-yellow-300' },
-    { emoji: '🌿', label: 'Ruhig', value: 4, color: 'bg-green-100 border-green-300' },
-    { emoji: '☁️', label: 'Neutral', value: 3, color: 'bg-slate-100 border-slate-300' },
-    { emoji: '🌧️', label: 'Niedergeschlagen', value: 2, color: 'bg-blue-100 border-blue-300' },
-    { emoji: '🌪️', label: 'Überfordert', value: 1, color: 'bg-purple-100 border-purple-300' },
+    { emoji: '✨', label: 'Sehr gut', value: 5, color: 'bg-yellow-100 border-yellow-300' },
+    { emoji: '🌿', label: 'Gut', value: 4, color: 'bg-green-100 border-green-300' },
+    { emoji: '☁️', label: 'Okay', value: 3, color: 'bg-slate-100 border-slate-300' },
+    { emoji: '🌧️', label: 'Nicht gut', value: 2, color: 'bg-blue-100 border-blue-300' },
+    { emoji: '🌪️', label: 'Schlecht', value: 1, color: 'bg-purple-100 border-purple-300' },
 ];
 
 interface MoodEntry {
     id: string;
-    date: string;
+    createdAt: string;
     mood: number;
     note: string;
 }
 
 export default function MoodView() {
+    const location = useLocation();
+    const initialMood = location.state?.mood || null;
     const [entries, setEntries] = useState<MoodEntry[]>([]);
-    const [selectedMood, setSelectedMood] = useState<number | null>(null);
+    const [selectedMood, setSelectedMood] = useState<number | null>(initialMood);
     const [note, setNote] = useState('');
-    const [showDialog, setShowDialog] = useState(false);
+    const [showDialog, setShowDialog] = useState(!!initialMood);
     const [viewMode, setViewMode] = useState<'list' | 'visual'>('list');
+    const [error, setError] = useState('');
 
-    const handleSave = () => {
-        if (!selectedMood) return;
+    useEffect(() => {
+        fetch("http://localhost:8080/api/moods")
+            .then((res) => res.json())
+            .then((data) => setEntries(data));
+    }, []);
 
-        const newEntry: MoodEntry = {
-            id: crypto.randomUUID(),
-            date: new Date().toLocaleDateString('de-DE', {
-                day: '2-digit',
-                month: 'short',
+    const handleSave = async () => {
+        if (!selectedMood) {
+            setError("Bitte eine Stimmung auswählen");
+            return;
+        }
+
+        const response = await fetch("http://localhost:8080/api/moods", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                mood: selectedMood,
+                note: note,
             }),
-            mood: selectedMood,
-            note,
-        };
+        });
 
-        setEntries([newEntry, ...entries]);
+        const savedEntry = await response.json();
+
+        setEntries([savedEntry, ...entries]);
         setSelectedMood(null);
-        setNote('');
+        setNote("");
         setShowDialog(false);
     };
 
@@ -93,9 +109,14 @@ export default function MoodView() {
                     <textarea
                         value={note}
                         onChange={(e) => setNote(e.target.value)}
-                        placeholder="Was hat zu dieser Stimmung geführt?"
+                        placeholder="Was hat zu dieser Stimmung geführt? (Optional)"
                         className="mood-textarea"
                     />
+                    {error && (
+                        <p className="mood-error">
+                            {error}
+                        </p>
+                    )}
 
                     <div className="mood-dialog-actions">
 
@@ -116,6 +137,43 @@ export default function MoodView() {
                     </div>
                 </div>
             )}
+
+            <div className="mood-history">
+                <h2>Verlauf</h2>
+
+                {entries.length === 0 ? (
+                    <p>Noch keine Einträge vorhanden.</p>
+                ) : (
+                    entries.map((entry) => {
+                        const mood = moods.find((m) => m.value === entry.mood);
+
+                        return (
+                            <div className="mood-history-item" key={entry.id}>
+                                <span className="mood-history-emoji">{mood?.emoji}</span>
+
+                                <div className="mood-history-content">
+                                    <div className="mood-history-top">
+                                        <p className="mood-history-date">
+                                            {entry.createdAt
+                                                ? new Date(entry.createdAt).toLocaleDateString("de-DE", {
+                                                    day: "2-digit",
+                                                    month: "short",
+                                                })
+                                                : "Heute"}
+                                        </p>
+
+                                        <p className="mood-history-label">{mood?.label}</p>
+                                    </div>
+
+                                    {entry.note && (
+                                        <p className="mood-history-note">{entry.note}</p>
+                                    )}
+                                </div>
+                            </div>
+                        );
+                    })
+                )}
+            </div>
         </div>
     );
 }
