@@ -53,7 +53,7 @@ export default function HomeMoodCard() {
                         </div>
 
                         <p>
-                            Möchtest du deine Stimmung als Eintrag speichern?
+                            Möchtest du deine Stimmung speichern?
                         </p>
 
                         <div className="home-mood-actions">

@@ -144,10 +144,47 @@ export default function MoodView() {
             )}
 
             <div className="mood-history">
-                <h2>Verlauf</h2>
+                <div className="mood-history-header">
+                    <h2>Verlauf</h2>
+
+                    <button
+                        onClick={() =>
+                            setViewMode(viewMode === "list" ? "visual" : "list")
+                        }
+                        className="mood-add-button"
+                    >
+                        {viewMode === "list"
+                            ? "Als Grafik anzeigen"
+                            : "Als Liste anzeigen"}
+                    </button>
+                </div>
 
                 {entries.length === 0 ? (
                     <p>Noch keine Einträge vorhanden.</p>
+                ) : viewMode === "visual" ? (
+                    <div className="mood-chart">
+                    {[...entries].reverse().map((entry) => {
+                            const mood = moods.find((m) => m.value === entry.mood);
+
+                            return (
+                                <div className="mood-chart-item" key={entry.id}>
+                                    <div
+                                        className="mood-chart-bar"
+                                        style={{ height: `${entry.mood * 30}px` }}
+                                    >
+                                        {mood?.emoji}
+                                    </div>
+
+                                    <small>
+                                        {new Date(entry.createdAt).toLocaleDateString("de-DE", {
+                                            day: "2-digit",
+                                            month: "short",
+                                        })}
+                                    </small>
+                                </div>
+                            );
+                        })}
+                    </div>
                 ) : (
                     entries.map((entry) => {
                         const mood = moods.find((m) => m.value === entry.mood);
