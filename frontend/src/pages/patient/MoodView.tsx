@@ -25,6 +25,8 @@ export default function MoodView() {
     const [showDialog, setShowDialog] = useState(!!initialMood);
     const [viewMode, setViewMode] = useState<'list' | 'visual'>('list');
     const [error, setError] = useState('');
+    const [deleteId, setDeleteId] = useState<string | null>(null);
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
     useEffect(() => {
         fetch("http://localhost:8080/api/moods", {
@@ -60,6 +62,21 @@ export default function MoodView() {
         setSelectedMood(null);
         setNote("");
         setShowDialog(false);
+    };
+
+    const handleDelete = async () => {
+        if (!deleteId) return;
+
+        await fetch(`http://localhost:8080/api/moods/${deleteId}`, {
+            method: "DELETE",
+            headers: {
+                "X-User-Id": localStorage.getItem("userId") || "",
+            },
+        });
+
+        setEntries(entries.filter((e) => e.id !== deleteId));
+        setDeleteId(null);
+        setShowDeleteDialog(false);
     };
 
     return (
@@ -99,16 +116,15 @@ export default function MoodView() {
                                         : ""
                                 }`}
                             >
-              <span className="mood-emoji">
-                {mood.emoji}
-              </span>
+                              <span className="mood-emoji">
+                                {mood.emoji}
+                              </span>
 
                                 <span className="mood-label">
-                {mood.label}
-              </span>
+                                {mood.label}
+                              </span>
                             </button>
                         ))}
-
                     </div>
 
                     <textarea
@@ -205,6 +221,16 @@ export default function MoodView() {
                                         </p>
 
                                         <p className="mood-history-label">{mood?.label}</p>
+                                        <button
+                                            className="mood-delete-button"
+                                            onClick={() => {
+                                                setDeleteId(entry.id);
+                                                setShowDeleteDialog(true);
+                                            }}
+                                        >
+
+                                            🗑️
+                                        </button>
                                     </div>
 
                                     {entry.note && (
@@ -216,6 +242,29 @@ export default function MoodView() {
                     })
                 )}
             </div>
+            {showDeleteDialog && (
+                <div className="home-mood-overlay">
+                    <div className="home-mood-dialog">
+                        <p>Möchtest du diese Stimmung löschen?</p>
+
+                        <div className="home-mood-actions">
+                            <button
+                                onClick={() => {
+                                    setShowDeleteDialog(false);
+                                    setDeleteId(null);
+                                }}
+                            >
+                                Nein
+                            </button>
+
+                            <button onClick={handleDelete}>
+                                Ja
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
         </div>
     );
 }

@@ -44,4 +44,18 @@ public class MoodEntryController {
 
         return moodEntryRepository.findByUserOrderByCreatedAtDesc(user);
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteMood(@PathVariable Long id,
+                           @RequestHeader("X-User-Id") Long userId) {
+
+        MoodEntry entry = moodEntryRepository.findById(id)
+                .orElseThrow();
+
+        if (!entry.getUser().getId().equals(userId)) {
+            throw new RuntimeException("Nicht erlaubt");
+        }
+
+        moodEntryRepository.delete(entry);
+    }
 }
