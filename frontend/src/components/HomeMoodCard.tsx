@@ -65,13 +65,13 @@ export default function HomeMoodCard() {
                             </button>
 
                             <button
-                                onClick={() =>
+                                onClick={() => {
                                     navigate('/patient/moodview', {
                                         state: {
                                             mood: pendingMood,
                                         },
-                                    })
-                                }
+                                    });
+                                }}
                             >
                                 Ja
                             </button>

@@ -27,7 +27,11 @@ export default function MoodView() {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        fetch("http://localhost:8080/api/moods")
+        fetch("http://localhost:8080/api/moods", {
+            headers: {
+                "X-User-Id": localStorage.getItem("userId") || "",
+            },
+        })
             .then((res) => res.json())
             .then((data) => setEntries(data));
     }, []);
@@ -42,6 +46,7 @@ export default function MoodView() {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "X-User-Id": localStorage.getItem("userId") || "",
             },
             body: JSON.stringify({
                 mood: selectedMood,
