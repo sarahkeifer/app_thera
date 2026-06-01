@@ -67,53 +67,58 @@ function AuthForm({ onLoginSuccess }: AuthFormProps) {
     }
 
     return (
-        <div>
-            <h1>{mode === "login" ? "Einloggen" : "Registrieren"}</h1>
+        <div className="auth-page">
+            <div className="auth-card">
+                <h1>{mode === "login" ? "Einloggen" : "Registrieren"}</h1>
 
-            <input
-                type="email"
-                placeholder="E-Mail"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-            />
+                <input
+                    className="auth-input"
+                    type="email"
+                    placeholder="E-Mail"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                />
 
-            <br />
+                <input
+                    className="auth-input"
+                    type="password"
+                    placeholder="Passwort"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
 
-            <input
-                type="password"
-                placeholder="Passwort"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
+                {mode === "register" && (
+                    <div className="role-selector">
+                        <button
+                            className={role === "PATIENT" ? "active" : ""}
+                            onClick={() => setRole("PATIENT")}
+                        >
+                            Patient
+                        </button>
 
-            <br />
+                        <button
+                            className={role === "THERAPIST" ? "active" : ""}
+                            onClick={() => setRole("THERAPIST")}
+                        >
+                            Therapeut
+                        </button>
+                    </div>
+                )}
 
-            {mode === "register" && (
-                <>
-                    <select value={role} onChange={(e) => setRole(e.target.value)}>
-                        <option value="PATIENT">Patient</option>
-                        <option value="THERAPIST">Therapeut</option>
-                    </select>
+                <button className="auth-primary" onClick={mode === "login" ? login : register}>
+                    {mode === "login" ? "Einloggen" : "Registrieren"}
+                </button>
 
-                    <br />
-                </>
-            )}
+                <p className="auth-switch-text">
+                    {mode === "login" ? "Noch keinen Account?" : "Schon einen Account?"}
+                </p>
 
-            {mode === "login" ? (
-                <button onClick={login}>Einloggen</button>
-            ) : (
-                <button onClick={register}>Registrieren</button>
-            )}
+                <button className="auth-secondary" onClick={() => setMode(mode === "login" ? "register" : "login")}>
+                    {mode === "login" ? "Registrieren" : "Einloggen"}
+                </button>
 
-            <br />
-
-            <p>{mode === "login" ? "Noch keinen Account?" : "Schon einen Account?"}</p>
-
-            <button onClick={() => setMode(mode === "login" ? "register" : "login")}>
-                {mode === "login" ? "Registrieren" : "Einloggen"}
-            </button>
-
-            <p>{message}</p>
+                {message && <p className="auth-message">{message}</p>}
+            </div>
         </div>
     );
 }
