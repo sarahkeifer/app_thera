@@ -13,7 +13,7 @@ import PatientNav from "./pages/patient/PatientNav.tsx";
 import TherapistNav from "./pages/therapist/TherapistNav.tsx";
 
 function App() {
-    const [loggedInRole, setLoggedInRole] = useState("PATIENT");
+    const [loggedInRole, setLoggedInRole] = useState("");
 
     if (!loggedInRole) {
         return <AuthForm onLoginSuccess={setLoggedInRole}/>;
