@@ -207,13 +207,25 @@
     border-bottom: 1.5px solid black;
 }
 
+
+.auth-card h1 {
+  margin: 0 0 28px;
+  font-size: 34px;
+  color: #0f172a;
+}
+
 .auth-page {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 24px;
-  background: linear-gradient(135deg, #f8fafc, #f3e8ff);
+  background: linear-gradient(
+          135deg,
+          #f8fbff 0%,
+          #edf6fb 50%,
+          #f5f7fa 100%
+  );
 }
 
 .auth-card {
@@ -227,58 +239,22 @@
   text-align: center;
 }
 
-.auth-card h1 {
-  margin: 0 0 28px;
-  font-size: 34px;
-  color: #0f172a;
-}
-
-.auth-input {
+.auth-card kol-input-email,
+.auth-card kol-input-password,
+.auth-card kol-button {
+  display: block;
   width: 100%;
-  box-sizing: border-box;
-  border: 1px solid #e2e8f0;
-  background: #f8fafc;
-  border-radius: 18px;
-  padding: 15px 16px;
   margin-bottom: 14px;
-  font-size: 16px;
-  outline: none;
 }
 
-.auth-input:focus {
-  border-color: #aa3bff;
-  background: white;
-  box-shadow: 0 0 0 4px rgba(170, 59, 255, 0.12);
+.role-selector {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
-.auth-primary,
-.auth-secondary {
-  width: 100%;
-  border: none;
-  border-radius: 18px;
-  padding: 15px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.auth-primary {
-  margin-top: 8px;
-  background: #aa3bff;
-  color: white;
-  font-weight: 600;
-}
-
-.auth-primary:hover {
-  background: #9333ea;
-}
-
-.auth-secondary {
-  background: #f1f5f9;
-  color: #334155;
-}
-
-.auth-secondary:hover {
-  background: #e2e8f0;
+.role-selector kol-button {
+  flex: 1;
 }
 
 .auth-switch-text {
@@ -290,28 +266,6 @@
   margin-top: 18px;
   color: #334155;
   font-size: 14px;
-}
-
-.role-selector {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.role-selector button {
-  flex: 1;
-  padding: 14px;
-  border: none;
-  border-radius: 16px;
-  background: #f1f5f9;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.role-selector button.active {
-  background: #aa3bff;
-  color: white;
-  font-weight: 600;
 }
 
 .home-header {

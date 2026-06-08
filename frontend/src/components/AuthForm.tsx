@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { KolButton, KolInputEmail, KolInputPassword } from "@public-ui/react-v19";
 
 type AuthFormProps = {
     onLoginSuccess: (role: string) => void;
@@ -74,51 +75,66 @@ function AuthForm({ onLoginSuccess }: AuthFormProps) {
             <div className="auth-card">
                 <h1>{mode === "login" ? "Einloggen" : "Registrieren"}</h1>
 
-                <input
-                    className="auth-input"
-                    type="email"
-                    placeholder="E-Mail"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
 
-                <input
-                    className="auth-input"
-                    type="password"
-                    placeholder="Passwort"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
+                    <KolInputEmail
+                        _label="E-Mail"
+                        _hideLabel
+                        _value={email}
+                        _on={{
+                            onInput: (_event, value) => setEmail(String(value)),
+                        }}
+                    />
+
+
+                    <KolInputPassword
+                        _label="Passwort"
+                        _hideLabel
+                        _value={password}
+                        _on={{
+                            onInput: (_event, value) => setPassword(String(value)),
+                        }}
+                    />
 
                 {mode === "register" && (
                     <div className="role-selector">
-                        <button
-                            className={role === "PATIENT" ? "active" : ""}
-                            onClick={() => setRole("PATIENT")}
-                        >
-                            Patient
-                        </button>
+                        <KolButton
+                            _label="Patient"
+                            _variant={role === "PATIENT" ? "primary" : "secondary"}
+                            _on={{
+                                onClick: () => setRole("PATIENT"),
+                            }}
+                        />
 
-                        <button
-                            className={role === "THERAPIST" ? "active" : ""}
-                            onClick={() => setRole("THERAPIST")}
-                        >
-                            Therapeut
-                        </button>
+                        <KolButton
+                            _label="Therapeut"
+                            _variant={role === "THERAPIST" ? "primary" : "secondary"}
+                            _on={{
+                                onClick: () => setRole("THERAPIST"),
+                            }}
+                        />
+
                     </div>
                 )}
 
-                <button className="auth-primary" onClick={mode === "login" ? login : register}>
-                    {mode === "login" ? "Einloggen" : "Registrieren"}
-                </button>
+                    <KolButton
+                        _label={mode === "login" ? "Einloggen" : "Registrieren"}
+                        _on={{
+                            onClick: mode === "login" ? login : register,
+                        }}
+                    />
+
 
                 <p className="auth-switch-text">
                     {mode === "login" ? "Noch keinen Account?" : "Schon einen Account?"}
                 </p>
 
-                <button className="auth-secondary" onClick={() => setMode(mode === "login" ? "register" : "login")}>
-                    {mode === "login" ? "Registrieren" : "Einloggen"}
-                </button>
+                <KolButton
+                    _label={mode === "login" ? "Registrieren" : "Einloggen"}
+                    _variant="secondary"
+                    _on={{
+                        onClick: () => setMode(mode === "login" ? "register" : "login"),
+                    }}
+                />
 
                 {message && <p className="auth-message">{message}</p>}
             </div>
