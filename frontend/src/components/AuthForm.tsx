@@ -59,6 +59,9 @@ function AuthForm({ onLoginSuccess }: AuthFormProps) {
         if (response.ok) {
             const user = await response.json();
 
+            localStorage.setItem("userId", user.id);
+            localStorage.setItem("role", user.role);
+
             onLoginSuccess(user.role);
             setMessage("Login erfolgreich");
         } else {
