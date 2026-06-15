@@ -11,9 +11,9 @@
   },
   "dependencies": {
     "@fullcalendar/react": "^6.1.20",
-    "@public-ui/components": "^4.2.1",
+    "@public-ui/core": "^1.7.29",
     "@public-ui/react-v19": "^4.2.1",
-    "@public-ui/themes": "^4.2.1",
+    "@public-ui/theme-default": "^4.2.1",
     "axios": "^1.16.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
