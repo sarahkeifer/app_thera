@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { KolButton, KolInputEmail, KolInputPassword } from "@public-ui/react-v19";
 
 type AuthFormProps = {
     onLoginSuccess: (role: string) => void;
@@ -10,6 +11,7 @@ function AuthForm({ onLoginSuccess }: AuthFormProps) {
     const [role, setRole] = useState("PATIENT");
     const [message, setMessage] = useState("");
     const [mode, setMode] = useState<"login" | "register">("login");
+
 
     function validateFields() {
         if (!email.trim()) {
@@ -70,53 +72,56 @@ function AuthForm({ onLoginSuccess }: AuthFormProps) {
     }
 
     return (
-        <div>
-            <h1>{mode === "login" ? "Einloggen" : "Registrieren"}</h1>
+        <div className="auth-page">
+            <div className="auth-card">
+                <h1>{mode === "login" ? "Einloggen" : "Registrieren"}</h1>
 
-            <input
-                type="email"
-                placeholder="E-Mail"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-            />
+                <KolInputEmail
+                    _label="E-Mail"
+                    _hideLabel
+                    _value={email}
+                    _on={{ onInput: (_e, v) => setEmail(String(v)) }}
+                />
 
-            <br />
+                <KolInputPassword
+                    _label="Passwort"
+                    _hideLabel
+                    _value={password}
+                    _on={{ onInput: (_e, v) => setPassword(String(v)) }}
+                />
 
-            <input
-                type="password"
-                placeholder="Passwort"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
+                {mode === "register" && (
+                    <div className="role-selector">
+                        <KolButton
+                            _label="Patient"
+                            _variant={role === "PATIENT" ? "primary" : "secondary"}
+                            _on={{ onClick: () => setRole("PATIENT") }}
+                        />
+                        <KolButton
+                            _label="Therapeut"
+                            _variant={role === "THERAPIST" ? "primary" : "secondary"}
+                            _on={{ onClick: () => setRole("THERAPIST") }}
+                        />
+                    </div>
+                )}
 
-            <br />
+                <KolButton
+                    _label={mode === "login" ? "Einloggen" : "Registrieren"}
+                    _on={{ onClick: mode === "login" ? login : register }}
+                />
 
-            {mode === "register" && (
-                <>
-                    <select value={role} onChange={(e) => setRole(e.target.value)}>
-                        <option value="PATIENT">Patient</option>
-                        <option value="THERAPIST">Therapeut</option>
-                    </select>
+                <p className="auth-switch-text">
+                    {mode === "login" ? "Noch keinen Account?" : "Schon einen Account?"}
+                </p>
 
-                    <br />
-                </>
-            )}
+                <KolButton
+                    _label={mode === "login" ? "Registrieren" : "Einloggen"}
+                    _variant="secondary"
+                    _on={{ onClick: () => setMode(mode === "login" ? "register" : "login") }}
+                />
 
-            {mode === "login" ? (
-                <button onClick={login}>Einloggen</button>
-            ) : (
-                <button onClick={register}>Registrieren</button>
-            )}
-
-            <br />
-
-            <p>{mode === "login" ? "Noch keinen Account?" : "Schon einen Account?"}</p>
-
-            <button onClick={() => setMode(mode === "login" ? "register" : "login")}>
-                {mode === "login" ? "Registrieren" : "Einloggen"}
-            </button>
-
-            <p>{message}</p>
+                {message && <p className="auth-message">{message}</p>}
+            </div>
         </div>
     );
 }
