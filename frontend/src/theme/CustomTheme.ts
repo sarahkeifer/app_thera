@@ -8,11 +8,11 @@ export const CustomTheme = (
 
         'kol-button': `
             button {
-                width: 420px;
+                width: var(--button-width, 420px);
                 min-height: 56px;
                 border: none;
                 border-radius: 18px;
-                background: #aa3bff;
+                background: #a855f7;
                 color: white;
                 font-size: 16px;
                 font-weight: 600;
@@ -35,6 +35,16 @@ export const CustomTheme = (
                 outline: 3px solid rgba(170, 59, 255, 0.25);
                 outline-offset: 2px;
             }
+            
+            :host([_variant="secondary"]) button {
+                background: #f3e8ff;
+                color: #7e22ce;
+                border: 1px solid #d8b4fe;
+            }
+        
+            :host([_variant="secondary"]) button:hover {
+                background: #e9d5ff;
+            }
         `,
 
         // ─── Inputs ────────────────────────────────────────────────────────────
@@ -47,6 +57,7 @@ export const CustomTheme = (
                 border: 1px solid #e2e8f0;
                 border-radius: 18px;
                 background: white;
+                margin-bottom: 36px;
                 color: #1e293b;
                 padding: 0 18px;
                 font-size: 16px;
@@ -77,6 +88,7 @@ export const CustomTheme = (
                 box-sizing: border-box;
                 border: 1px solid #e2e8f0;
                 border-radius: 18px;
+                margin-bottom: 36px;
                 background: white;
                 color: #1e293b;
                 padding: 0 18px;
