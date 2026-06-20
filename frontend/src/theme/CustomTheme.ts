@@ -8,13 +8,14 @@ export const CustomTheme = (
 
         'kol-button': `
             button {
+                font-family: 'Jaldi', sans-serif;
                 width: var(--button-width, 420px);
                 min-height: 56px;
                 border: none;
                 border-radius: 18px;
                 background: #a855f7;
                 color: white;
-                font-size: 16px;
+                font-size: 20px;
                 font-weight: 600;
                 cursor: pointer;
                 transition:
@@ -51,6 +52,7 @@ export const CustomTheme = (
 
         'kol-input-email': `
             input {
+                font-family: 'Jaldi', sans-serif;
                 width: 100%;
                 min-height: 56px;
                 box-sizing: border-box;
@@ -83,6 +85,7 @@ export const CustomTheme = (
 
         'kol-input-password': `
             input {
+                font-family: 'Jaldi', sans-serif;
                 width: 100%;
                 min-height: 56px;
                 box-sizing: border-box;
