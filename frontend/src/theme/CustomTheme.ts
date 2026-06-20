@@ -62,7 +62,7 @@ export const CustomTheme = (
                 margin-bottom: 36px;
                 color: #1e293b;
                 padding: 0 18px;
-                font-size: 16px;
+                font-size: 20px;
                 transition:
                     border-color 0.2s ease,
                     box-shadow 0.2s ease;
@@ -95,7 +95,7 @@ export const CustomTheme = (
                 background: white;
                 color: #1e293b;
                 padding: 0 18px;
-                font-size: 16px;
+                font-size: 20px;
                 transition:
                     border-color 0.2s ease,
                     box-shadow 0.2s ease;
