@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { KolButton, KolInputEmail, KolInputPassword } from "@public-ui/react-v19";
 
 type AuthFormProps = {
@@ -11,21 +11,22 @@ function AuthForm({ onLoginSuccess }: AuthFormProps) {
     const [role, setRole] = useState("PATIENT");
     const [message, setMessage] = useState("");
     const [mode, setMode] = useState<"login" | "register">("login");
+    const messageTimeoutRef = useRef<number | null>(null);
 
 
     function validateFields() {
         if (!email.trim()) {
-            setMessage("Bitte E-Mail eingeben");
+            showMessage("Bitte E-Mail eingeben");
             return false;
         }
 
         if (!email.includes("@")) {
-            setMessage("Bitte gültige E-Mail eingeben");
+            showMessage("Bitte gültige E-Mail eingeben");
             return false;
         }
 
         if (!password.trim()) {
-            setMessage("Bitte Passwort eingeben");
+            showMessage("Bitte Passwort eingeben");
             return false;
         }
 
@@ -44,7 +45,7 @@ function AuthForm({ onLoginSuccess }: AuthFormProps) {
         });
 
         const text = await response.text();
-        setMessage(text);
+        showMessage(text);
     }
 
     async function login() {
@@ -65,10 +66,23 @@ function AuthForm({ onLoginSuccess }: AuthFormProps) {
             localStorage.setItem("role", user.role);
 
             onLoginSuccess(user.role);
-            setMessage("Login erfolgreich");
+            showMessage("Login erfolgreich");
         } else {
-            setMessage("Login fehlgeschlagen");
+            showMessage("Login fehlgeschlagen");
         }
+    }
+
+    function showMessage(text: string) {
+        setMessage(text);
+
+
+        if (messageTimeoutRef.current) {
+            clearTimeout(messageTimeoutRef.current);
+        }
+
+        messageTimeoutRef.current = window.setTimeout(() => {
+            setMessage("");
+        }, 3000);
     }
 
     return (

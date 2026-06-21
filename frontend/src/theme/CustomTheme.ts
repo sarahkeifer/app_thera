@@ -15,7 +15,7 @@ export const CustomTheme = (
                 border-radius: 18px;
                 background: #a855f7;
                 color: white;
-                font-size: 20px;
+                font-size: var(--button-font-size, 20px);
                 font-weight: 600;
                 cursor: pointer;
                 transition:
@@ -159,7 +159,7 @@ export const CustomTheme = (
                 min-height: 120px;
                 resize: none;
                 font-size: 18px;
-                font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+                font-family: 'Jaldi', sans-serif;
                 color: #1e293b;
                 background: white;
                 transition:
@@ -224,6 +224,31 @@ export const CustomTheme = (
                 border-radius: 28px;
                 padding: 24px;
             }
+            
+            :host([_variant="dialog"]) {
+              background: white;
+              border-radius: 32px;
+              padding: 24px;
+              width: 100%;
+              max-width: 500px;
+            }
+            
+            :host([_variant="history"]) {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 32px;
+            padding: 24px;
+            margin-top: 32px;
+        }
+        
+        :host([_variant="history-item"]) {
+            background: #f8fafc;
+            border: none;
+            border-radius: 24px;
+            padding: 16px;
+            margin-bottom: 14px;
+            box-shadow: none;
+        }
 
             div.header {
                 display: none; /* hide default KoliBri card header if unused */
@@ -310,7 +335,7 @@ export const CustomTheme = (
         'kol-heading': `
             /* page titles */
             h1 {
-                font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+                font-family: 'Jaldi', sans-serif;
                 font-weight: 500;
                 color: #08060d;
                 font-size: 56px;
@@ -319,7 +344,7 @@ export const CustomTheme = (
             }
 
             h2 {
-                font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+                font-family: 'Jaldi', sans-serif;
                 font-weight: 500;
                 color: #08060d;
                 font-size: 24px;

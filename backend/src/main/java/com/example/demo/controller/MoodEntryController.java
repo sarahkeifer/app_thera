@@ -58,4 +58,22 @@ public class MoodEntryController {
 
         moodEntryRepository.delete(entry);
     }
+
+    @PutMapping("/{id}")
+    public MoodEntry updateMood(@PathVariable Long id,
+                                @RequestBody MoodEntry updatedMood,
+                                @RequestHeader("X-User-Id") Long userId) {
+
+        MoodEntry entry = moodEntryRepository.findById(id)
+                .orElseThrow();
+
+        if (!entry.getUser().getId().equals(userId)) {
+            throw new RuntimeException("Nicht erlaubt");
+        }
+
+        entry.setMood(updatedMood.getMood());
+        entry.setNote(updatedMood.getNote());
+
+        return moodEntryRepository.save(entry);
+    }
 }

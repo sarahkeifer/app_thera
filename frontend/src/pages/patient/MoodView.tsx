@@ -1,14 +1,19 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import {
+    KolButton,
+    KolCard,
+    KolHeading,
+    KolTextarea
+} from "@public-ui/react-v19";
 
 const moods = [
-    { emoji: '✨', label: 'Sehr gut', value: 5, color: 'bg-yellow-100 border-yellow-300' },
-    { emoji: '🌿', label: 'Gut', value: 4, color: 'bg-green-100 border-green-300' },
-    { emoji: '☁️', label: 'Okay', value: 3, color: 'bg-slate-100 border-slate-300' },
-    { emoji: '🌧️', label: 'Nicht gut', value: 2, color: 'bg-blue-100 border-blue-300' },
-    { emoji: '🌪️', label: 'Schlecht', value: 1, color: 'bg-purple-100 border-purple-300' },
+    { emoji: '🤩', label: 'Sehr gut', value: 5 },
+    { emoji: '😊', label: 'Gut', value: 4 },
+    { emoji: '😐', label: 'Okay', value: 3},
+    { emoji: '😔', label: 'Nicht gut', value: 2 },
+    { emoji: '😢', label: 'Schlecht', value: 1 },
 ];
-
 interface MoodEntry {
     id: string;
     createdAt: string;
@@ -27,6 +32,7 @@ export default function MoodView() {
     const [error, setError] = useState('');
     const [deleteId, setDeleteId] = useState<string | null>(null);
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+    const [editingEntry, setEditingEntry] = useState<MoodEntry | null>(null);
 
     useEffect(() => {
         fetch("http://localhost:8080/api/moods", {
@@ -44,8 +50,14 @@ export default function MoodView() {
             return;
         }
 
-        const response = await fetch("http://localhost:8080/api/moods", {
-            method: "POST",
+        const url = editingEntry
+            ? `http://localhost:8080/api/moods/${editingEntry.id}`
+            : "http://localhost:8080/api/moods";
+
+        const method = editingEntry ? "PUT" : "POST";
+
+        const response = await fetch(url, {
+            method,
             headers: {
                 "Content-Type": "application/json",
                 "X-User-Id": localStorage.getItem("userId") || "",
@@ -58,9 +70,18 @@ export default function MoodView() {
 
         const savedEntry = await response.json();
 
-        setEntries([savedEntry, ...entries]);
+        if (editingEntry) {
+            setEntries(entries.map((entry) =>
+                entry.id === editingEntry.id ? savedEntry : entry
+            ));
+        } else {
+            setEntries([savedEntry, ...entries]);
+        }
+
+        setEditingEntry(null);
         setSelectedMood(null);
         setNote("");
+        setError("");
         setShowDialog(false);
     };
 
@@ -83,184 +104,223 @@ export default function MoodView() {
         <div className="mood-page">
 
             <div className="mood-header">
-                <h1 className="mood-title">Stimmungs-Tracker</h1>
+                <KolHeading
+                    _level={1}
+                    _label="Stimmungs-Tracker"
+                />
 
                 <p className="mood-subtitle">
                     Wie fühlst du dich gerade?
                 </p>
             </div>
 
-            <button
-                onClick={() => setShowDialog(true)}
-                className="mood-add-button"
-            >
-                + Eintrag hinzufügen
-            </button>
+            <div className="mood-add-row">
+                <KolButton
+                    _label="+ Eintrag hinzufügen"
+                    _on={{
+                        onClick: () => {
+                            setEditingEntry(null);
+                            setSelectedMood(null);
+                            setNote("");
+                            setError("");
+                            setShowDialog(true);
+                        }
+                    }}
+                />
+            </div>
 
             {showDialog && (
-                <div className="mood-dialog">
-
-                    <h2 className="mood-dialog-title">
-                        Stimmung eintragen
-                    </h2>
+                <KolCard _label="" _variant="dialog">
+                    <KolHeading
+                        _level={2}
+                        _label={editingEntry ? "Stimmung bearbeiten" : "Stimmung eintragen"}
+                    />
 
                     <div className="mood-grid">
-
                         {moods.map((mood) => (
-                            <button
+                            <KolButton
                                 key={mood.value}
-                                onClick={() => setSelectedMood(mood.value)}
-                                className={`mood-button ${
-                                    selectedMood === mood.value
-                                        ? "mood-button-active"
-                                        : ""
-                                }`}
-                            >
-                              <span className="mood-emoji">
-                                {mood.emoji}
-                              </span>
-
-                                <span className="mood-label">
-                                {mood.label}
-                              </span>
-                            </button>
+                                _label={`${mood.emoji} ${mood.label}`}
+                                _variant={selectedMood === mood.value ? "primary" : "secondary"}
+                                _on={{
+                                    onClick: () => {
+                                        setSelectedMood(mood.value);
+                                        setError("");
+                                    }
+                                }}
+                            />
                         ))}
                     </div>
 
-                    <textarea
-                        value={note}
-                        onChange={(e) => setNote(e.target.value)}
-                        placeholder="Was hat zu dieser Stimmung geführt? (Optional)"
-                        className="mood-textarea"
+                    <KolTextarea
+                        _label="Notiz"
+                        _placeholder="Was hat zu dieser Stimmung geführt? (Optional)"
+                        _hideLabel
+                        _value={note}
+                        _on={{
+                            onInput: (_e, value) => setNote(String(value))
+                        }}
                     />
-                    {error && (
-                        <p className="mood-error">
-                            {error}
-                        </p>
-                    )}
+
+                    <div className="mood-error">
+                        {error}
+                    </div>
 
                     <div className="mood-dialog-actions">
+                        <KolButton
+                            _label="Abbrechen"
+                            _variant="secondary"
+                            _on={{onClick: () => setShowDialog(false)}}
+                        />
 
-                        <button
-                            onClick={() => setShowDialog(false)}
-                            className="mood-cancel-button"
-                        >
-                            Abbrechen
-                        </button>
-
-                        <button
-                            onClick={handleSave}
-                            className="mood-save-button"
-                        >
-                            Speichern
-                        </button>
-
+                        <KolButton
+                            _label="Speichern"
+                            _on={{onClick: handleSave}}
+                        />
                     </div>
-                </div>
+                </KolCard>
             )}
 
-            <div className="mood-history">
-                <div className="mood-history-header">
-                    <h2>Verlauf</h2>
+                <KolCard _label="" _variant="history">
+                    <KolHeading
+                        _level={2}
+                        _label="Verlauf"
+                    />
 
-                    <button
-                        onClick={() =>
-                            setViewMode(viewMode === "list" ? "visual" : "list")
+                <div className="mood-history-header">
+
+                    <KolButton
+                        _label={
+                            viewMode === "list"
+                                ? "Als Grafik anzeigen"
+                                : "Als Liste anzeigen"
                         }
-                        className="mood-add-button"
-                    >
-                        {viewMode === "list"
-                            ? "Als Grafik anzeigen"
-                            : "Als Liste anzeigen"}
-                    </button>
+                        _on={{
+                            onClick: () =>
+                                setViewMode(viewMode === "list" ? "visual" : "list")
+                        }}
+                    />
                 </div>
 
-                {entries.length === 0 ? (
-                    <p>Noch keine Einträge vorhanden.</p>
-                ) : viewMode === "visual" ? (
-                    <div className="mood-chart">
-                    {[...entries].reverse().map((entry) => {
+                <div className="mood-history-content-wrapper">
+                    {entries.length === 0 ? (
+                        <p>Noch keine Einträge vorhanden.</p>
+                    ) : viewMode === "visual" ? (
+                        <div className="mood-chart">
+                            {[...entries].reverse().map((entry) => {
+                                const mood = moods.find((m) => m.value === entry.mood);
+
+                                return (
+                                    <div className="mood-chart-item" key={entry.id}>
+                                        <div
+                                            className="mood-chart-bar"
+                                            style={{height: `${entry.mood * 30}px`}}
+                                        >
+                                            {mood?.emoji}
+                                        </div>
+
+                                        <small>
+                                            {new Date(entry.createdAt).toLocaleDateString("de-DE", {
+                                                day: "2-digit",
+                                                month: "short",
+                                            })}
+                                        </small>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        entries.map((entry) => {
                             const mood = moods.find((m) => m.value === entry.mood);
 
                             return (
-                                <div className="mood-chart-item" key={entry.id}>
-                                    <div
-                                        className="mood-chart-bar"
-                                        style={{ height: `${entry.mood * 30}px` }}
-                                    >
-                                        {mood?.emoji}
-                                    </div>
+                                <KolCard _label=" " _variant="history-item" key={entry.id}>
+                                    <div className="mood-history-item-inner">
+                                        <span className="mood-history-emoji">{mood?.emoji}</span>
 
-                                    <small>
-                                        {new Date(entry.createdAt).toLocaleDateString("de-DE", {
-                                            day: "2-digit",
-                                            month: "short",
-                                        })}
-                                    </small>
-                                </div>
+                                        <div className="mood-history-content">
+                                            <div className="mood-history-top">
+                                                <p className="mood-history-date">
+                                                    {entry.createdAt
+                                                        ? new Date(entry.createdAt).toLocaleDateString("de-DE", {
+                                                            day: "2-digit",
+                                                            month: "short",
+                                                        })
+                                                        : "Heute"}
+                                                </p>
+
+                                                <p className="mood-history-label">{mood?.label}</p>
+                                                <div className="mood-actions">
+                                                <KolButton
+                                                    _label="✏️"
+                                                    _variant="secondary"
+                                                    _on={{
+                                                        onClick: () => {
+                                                            setEditingEntry(entry);
+                                                            setSelectedMood(entry.mood);
+                                                            setNote(entry.note);
+                                                            setError("");
+                                                            setShowDialog(true);
+                                                            window.scrollTo({
+                                                                top: 0,
+                                                                behavior: "smooth"
+                                                            });
+                                                        },
+                                                    }}
+                                                />
+                                                <KolButton
+                                                    _label="✖️"
+                                                    _variant="secondary"
+                                                    _on={{
+                                                        onClick: () => {
+                                                            setDeleteId(entry.id);
+                                                            setShowDeleteDialog(true);
+                                                        },
+                                                    }}
+                                                />
+                                                </div>
+                                            </div>
+
+                                            {entry.note ? (
+                                                <p className="mood-history-note">{entry.note}</p>
+                                            ) : null}
+                                        </div>
+                                    </div>
+                                </KolCard>
                             );
-                        })}
-                    </div>
-                ) : (
-                    entries.map((entry) => {
-                        const mood = moods.find((m) => m.value === entry.mood);
+                        })
+                    )}
+                </div>
+            </KolCard>
 
-                        return (
-                            <div className="mood-history-item" key={entry.id}>
-                                <span className="mood-history-emoji">{mood?.emoji}</span>
-
-                                <div className="mood-history-content">
-                                    <div className="mood-history-top">
-                                        <p className="mood-history-date">
-                                            {entry.createdAt
-                                                ? new Date(entry.createdAt).toLocaleDateString("de-DE", {
-                                                    day: "2-digit",
-                                                    month: "short",
-                                                })
-                                                : "Heute"}
-                                        </p>
-
-                                        <p className="mood-history-label">{mood?.label}</p>
-                                        <button
-                                            className="mood-delete-button"
-                                            onClick={() => {
-                                                setDeleteId(entry.id);
-                                                setShowDeleteDialog(true);
-                                            }}
-                                        >
-
-                                            🗑️
-                                        </button>
-                                    </div>
-
-                                    {entry.note && (
-                                        <p className="mood-history-note">{entry.note}</p>
-                                    )}
-                                </div>
-                            </div>
-                        );
-                    })
-                )}
-            </div>
             {showDeleteDialog && (
                 <div className="home-mood-overlay">
-                    <div className="home-mood-dialog">
+                    <div className="delete-dialog">
+                        <KolCard _label="" _variant="dialog">
                         <p>Möchtest du diese Stimmung löschen?</p>
 
                         <div className="home-mood-actions">
-                            <button
-                                onClick={() => {
-                                    setShowDeleteDialog(false);
-                                    setDeleteId(null);
-                                }}
-                            >
-                                Nein
-                            </button>
+                            <div className="mood-btn">
+                                <KolButton
+                                    _label="Nein"
+                                    _variant="secondary"
+                                    _on={{
+                                        onClick: () => {
+                                            setShowDeleteDialog(false);
+                                            setDeleteId(null);
+                                        },
+                                    }}
+                                />
+                            </div>
 
-                            <button onClick={handleDelete}>
-                                Ja
-                            </button>
+                            <div className="mood-btn">
+                                <KolButton
+                                    _label="Ja"
+                                    _on={{ onClick: handleDelete }}
+                                />
+                            </div>
                         </div>
+                    </KolCard>
                     </div>
                 </div>
             )}

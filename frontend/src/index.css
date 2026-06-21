@@ -112,9 +112,13 @@ code {
 }
 
 .mood-page {
-    padding: 30px 24px 120px;
+    padding: 30px 24px 140px;
 }
 
+.mood-page kol-card[_variant="dialog"] {
+    width: 1500px;
+    max-width: 100%;
+}
 .mood-header {
     text-align: left;
     margin-bottom: 32px;
@@ -152,12 +156,6 @@ code {
 }
 
 .mood-dialog-title {
-    margin-bottom: 24px;
-}
-
-.mood-grid {
-    display: flex;
-    gap: 12px;
     margin-bottom: 24px;
 }
 
@@ -200,14 +198,9 @@ code {
     font-size: 18px;
 }
 
-.mood-dialog-actions {
-    display: flex;
-    gap: 12px;
-}
-
 .mood-error {
     color: #dc2626;
-    font-size: 15px;
+    font-size: 18px;
     margin-bottom: 16px;
     text-align: center;
 }
@@ -268,7 +261,7 @@ code {
 
 .mood-history-date {
     font-size: 20px;
-    font-weight: 600;
+    font-weight: 400;
     color: #1e293b;
     margin-bottom: 4px;
     min-width: 70px;
@@ -291,12 +284,32 @@ code {
     width: 100%;
 }
 
-.mood-history-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.mood-history-top kol-button {
+    --button-width: 64px;
+    margin-left: auto;
 }
 
+.mood-history-header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.mood-history-header kol-button {
+    --button-width: 220px;
+}
+
+.mood-history-content {
+    flex: 1;
+}
+
+.mood-history-item-inner {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    text-align: left;
+}
 .mood-chart {
     display: flex;
     align-items: flex-end;
@@ -337,6 +350,57 @@ code {
     padding: 6px;
     margin-left: auto;
     line-height: 1;
+}
+
+
+.mood-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-top: 24px;
+    margin-bottom: 24px;
+}
+
+.mood-grid kol-button {
+    --button-width: 100%;
+    --button-font-size: 18px;
+}
+
+.mood-dialog-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.mood-dialog-actions > * {
+    flex: 1;
+}
+
+.mood-dialog-actions kol-button {
+    --button-width: 100%;
+}
+
+.mood-add-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 24px;
+}
+
+.mood-add-row kol-button {
+    --button-width: 360px;
+}
+
+.delete-dialog {
+    width: 520px;
+}
+
+.mood-error:empty {
+    display: none;
+}
+
+.mood-actions {
+    display: flex;
+    gap: 8px;
 }
 
 .task-page {

@@ -1,83 +1,77 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { KolButton, KolCard, KolHeading } from "@public-ui/react-v19";
 
 const moods = [
-    { emoji: '✨', label: 'Sehr gut', value: 5 },
-    { emoji: '🌿', label: 'Gut', value: 4 },
-    { emoji: '☁️', label: 'Okay', value: 3 },
-    { emoji: '🌧️', label: 'Nicht gut', value: 2 },
-    { emoji: '🌪️', label: 'Schlecht', value: 1 },
+    { emoji: '🤩', label: 'Sehr gut', value: 5 },
+    { emoji: '😊', label: 'Gut', value: 4 },
+    { emoji: '😐', label: 'Okay', value: 3 },
+    { emoji: '😔', label: 'Nicht gut', value: 2 },
+    { emoji: '😢', label: 'Schlecht', value: 1 },
 ];
 
 export default function HomeMoodCard() {
     const navigate = useNavigate();
-
     const [pendingMood, setPendingMood] =
         useState<number | null>(null);
-
     const selectedMood = moods.find(
         (m) => m.value === pendingMood
     );
 
     return (
         <>
-            <div className="home-mood-card">
-
+            <KolCard _variant="mood">
                 <div className="home-mood-header">
                     <div className="home-mood-icon">❤</div>
-
-                    <h2 className="home-mood-title">
-                        Heutige Stimmung
-                    </h2>
+                    <KolHeading _level={2} _label="Heutige Stimmung" />
                 </div>
 
                 <div className="home-mood-row">
                     {moods.map((mood) => (
-                        <button
+                        <KolButton
                             key={mood.value}
-                            onClick={() => setPendingMood(mood.value)}
-                            className="home-mood-button"
-                        >
-                            {mood.emoji}
-                        </button>
+                            _label={mood.emoji}
+                            _hideLabel={false}
+                            _variant="secondary"
+                            _on={{ onClick: () => setPendingMood(mood.value) }}
+                        />
                     ))}
                 </div>
-            </div>
+            </KolCard>
 
             {pendingMood && (
                 <div className="home-mood-overlay">
-                    <div className="home-mood-dialog">
-
-                        <div className="home-mood-selected">
+                    <KolCard _variant="dialog">
+                        <div className="home-mood-question">
+                        <span className="home-mood-selected">
                             {selectedMood?.emoji}
+                        </span>
+                            <p>Möchtest du deine Stimmung speichern?</p>
                         </div>
-
-                        <p>
-                            Möchtest du deine Stimmung speichern?
-                        </p>
 
                         <div className="home-mood-actions">
+                            <div className="mood-btn">
+                                <KolButton
+                                    _label="Nein"
+                                    _variant="secondary"
+                                    _on={{onClick: () => setPendingMood(null)}}
+                                />
+                            </div>
 
-                            <button
-                                onClick={() => setPendingMood(null)}
-                            >
-                                Nein
-                            </button>
-
-                            <button
-                                onClick={() => {
-                                    navigate('/patient/moodview', {
-                                        state: {
-                                            mood: pendingMood,
+                            <div className="mood-btn">
+                                <KolButton
+                                    _label="Ja"
+                                    _on={{
+                                        onClick: () => {
+                                            navigate("/patient/moodview", {
+                                                state: {mood: pendingMood},
+                                            });
                                         },
-                                    });
-                                }}
-                            >
-                                Ja
-                            </button>
-
+                                    }}
+                                />
+                            </div>
                         </div>
-                    </div>
+                    </KolCard>
                 </div>
             )}
         </>
