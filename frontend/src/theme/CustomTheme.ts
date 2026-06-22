@@ -46,6 +46,10 @@ export const CustomTheme = (
             :host([_variant="secondary"]) button:hover {
                 background: #e9d5ff;
             }
+            :host(.filter-btn) button {
+                width: 140px;
+                min-height: 48px;
+            }
         `,
 
         // ─── Inputs ────────────────────────────────────────────────────────────
@@ -239,16 +243,38 @@ export const CustomTheme = (
             border-radius: 32px;
             padding: 24px;
             margin-top: 32px;
-        }
-        
-        :host([_variant="history-item"]) {
-            background: #f8fafc;
-            border: none;
-            border-radius: 24px;
-            padding: 16px;
-            margin-bottom: 14px;
-            box-shadow: none;
-        }
+            }
+            
+            :host([_variant="history-item"]) {
+                background: #f8fafc;
+                border: none;
+                border-radius: 24px;
+                padding: 16px;
+                margin-bottom: 14px;
+                box-shadow: none;
+            }
+            
+            .kol-card__header,
+            .kol-headline--strong {
+                font-weight: 400;
+                font-size: 20px;
+            }
+            
+            :host(.task-card) {
+              cursor: pointer;
+              transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                border-color 0.2s ease;
+            }
+            
+            :host(.task-card:hover) {
+              transform: translateY(-4px) scale(1.01);
+              border-color: #c084fc;
+              box-shadow:
+                rgba(168, 85, 247, 0.18) 0 16px 30px -8px,
+                rgba(0, 0, 0, 0.08) 0 6px 12px -4px;
+            }
 
             div.header {
                 display: none; /* hide default KoliBri card header if unused */
