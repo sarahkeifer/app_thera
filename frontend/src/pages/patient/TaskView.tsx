@@ -6,6 +6,7 @@ import {
     adhsContent,
     KVTherapieContent, SuchttherapieContent, DBTherapieContent,
 } from "../../data/psychoContent";
+import { KolButton, KolCard, KolHeading } from "@public-ui/react-v19";
 
 type TaskFilter = "all" | "psychoedukation" | "aktivitaet" | "reflexion";
 
@@ -23,9 +24,43 @@ const psychoedukationCards = [
 export default function TaskView() {
     const [filter, setFilter] = useState<TaskFilter>("all");
     const [selectedCategory, setSelectedCategory] = useState("");
+    const psychoContentMap = {
+        depression: {
+            content: depressionContent,
+            source: "ICD-10, Deutsche Gesellschaft für Psychiatrie und Psychotherapie",
+        },
+        angst: {
+            content: angstContent,
+            source: "ICD-10, Deutsche Gesellschaft für Psychiatrie und Psychotherapie",
+        },
+        adhs: {
+            content: adhsContent,
+            source: "ICD-10, Deutsche Gesellschaft für Psychiatrie und Psychotherapie",
+        },
+        "Kognitive Verhaltenstherapie (KVT)": {
+            content: KVTherapieContent,
+            source: "Deutsche Gesellschaft für Psychiatrie und Psychotherapie",
+        },
+        SuchttherapieContent: {
+            content: SuchttherapieContent,
+            source: "Deutsche Gesellschaft für Psychiatrie und Psychotherapie",
+        },
+        DBTherapieContent: {
+            content: DBTherapieContent,
+            source: "Deutsche Gesellschaft für Psychiatrie und Psychotherapie",
+        },
+    };
+    const selectedContent =
+        psychoContentMap[
+            selectedCategory as keyof typeof psychoContentMap
+            ];
+
     return (
         <div className="task-page">
-            <h1 className="task-title">Aufgaben</h1>
+            <KolHeading
+                _level={1}
+                _label="Aufgaben"
+            />
             {/* Zahl muss dynamisch sein */}
             <p className="task-subtitle">
                 3 offene Aufgaben
@@ -33,39 +68,47 @@ export default function TaskView() {
 
             <div className="task-filter-row">
 
-                <button
-                    onClick={() =>{
-                        setFilter("all");
-                        setSelectedCategory("");
-                }}
-                    className={`task-filter-button ${filter === "all" ? "task-filter-button-active" : ""}`}
-                >
-                    Alle
-                </button>
-
-                <button
-                    onClick={() => {
-                        setFilter("psychoedukation");
-                        setSelectedCategory("");
+                <KolButton
+                    _label="Alle"
+                    className="filter-btn"
+                    _variant={filter === "all" ? "primary" : "secondary"}
+                    _on={{
+                        onClick: () => {
+                            setFilter("all");
+                            setSelectedCategory("");
+                        },
                     }}
-                    className={`task-filter-button ${filter === "psychoedukation" ? "task-filter-button-active" : ""}`}
-                >
-                    Psychoedukation
-                </button>
+                />
 
-                <button
-                    onClick={() => setFilter("aktivitaet")}
-                    className={`task-filter-button ${filter === "aktivitaet" ? "task-filter-button-active" : ""}`}
-                >
-                    Aktivität
-                </button>
+                <KolButton
+                    _label="Psychoedukation"
+                    className="filter-btn"
+                    _variant={filter === "psychoedukation" ? "primary" : "secondary"}
+                    _on={{
+                        onClick: () => {
+                            setFilter("psychoedukation");
+                            setSelectedCategory("");
+                        },
+                    }}
+                />
 
-                <button
-                    onClick={() => setFilter("reflexion")}
-                    className={`task-filter-button ${filter === "reflexion" ? "task-filter-button-active" : ""}`}
-                >
-                    Reflexion
-                </button>
+                <KolButton
+                    _label="Aktivität"
+                    className="filter-btn"
+                    _variant={filter === "aktivitaet" ? "primary" : "secondary"}
+                    _on={{
+                        onClick: () => setFilter("aktivitaet"),
+                    }}
+                />
+
+                <KolButton
+                    _label="Reflexion"
+                    className="filter-btn"
+                    _variant={filter === "reflexion" ? "primary" : "secondary"}
+                    _on={{
+                        onClick: () => setFilter("reflexion"),
+                    }}
+                />
             </div>
 
             {(filter === "all" || filter === "psychoedukation") && (
@@ -77,28 +120,18 @@ export default function TaskView() {
 
                             {psychoedukationCards.map((card) => (
 
-                                <div
+                                <KolCard
+                                    _label=""
                                     className="task-card"
-                                    key={card.title}
                                     onClick={() => {
-                                        if (card.title === "Krankheiten") {
-                                            setSelectedCategory("krankheiten");
-                                        }
-
-                                        if (card.title === "Therapieformen") {
-                                            setSelectedCategory("therapieformen");
-                                        }
+                                        if (card.title === "Krankheiten") setSelectedCategory("krankheiten");
+                                        if (card.title === "Therapieformen") setSelectedCategory("therapieformen");
                                     }}
                                 >
-                                    <h2 className="task-card-title">
-                                        {card.title}
-                                    </h2>
+                                    <KolHeading _level={2} _label={card.title} />
+                                    <p className="task-card-description">{card.description}</p>
+                                </KolCard>
 
-                                    <p className="task-card-description">
-                                        {card.description}
-                                    </p>
-
-                                </div>
                             ))}
                         </div>
                     )}
@@ -106,26 +139,24 @@ export default function TaskView() {
                     {selectedCategory === "krankheiten" && (
                         <div className="task-card-list">
 
-                            <div
+                            <KolCard
+                                _label="ADHS"
                                 className="task-card"
                                 onClick={() => setSelectedCategory("adhs")}
-                            >
-                                <h2 className="task-card-title">ADHS</h2>
-                            </div>
+                            />
 
-                            <div
+
+                            <KolCard
+                                _label="Depression"
                                 className="task-card"
                                 onClick={() => setSelectedCategory("depression")}
-                            >
-                                <h2 className="task-card-title">Depression</h2>
-                            </div>
+                            />
 
-                            <div
+                            <KolCard
+                                _label="Angststörung"
                                 className="task-card"
                                 onClick={() => setSelectedCategory("angst")}
-                            >
-                                <h2 className="task-card-title">Angststörung</h2>
-                            </div>
+                            />
 
                         </div>
                     )}
@@ -133,79 +164,33 @@ export default function TaskView() {
                     {selectedCategory === "therapieformen" && (
                         <div className="task-card-list">
 
-                            <div
+                            <KolCard
+                                _label="Kognitive Verhaltenstherapie (KVT)"
                                 className="task-card"
                                 onClick={() => setSelectedCategory("Kognitive Verhaltenstherapie (KVT)")}
-                            >
-                                <h2 className="task-card-title">
-                                    Kognitive Verhaltenstherapie (KVT)
-                                </h2>
-                            </div>
+                            />
 
-                            <div
+
+                            <KolCard
+                                _label="Suchttherapie"
                                 className="task-card"
                                 onClick={() => setSelectedCategory("SuchttherapieContent")}
-                            >
-                                <h2 className="task-card-title">
-                                    Suchttherapie
-                                </h2>
-                            </div>
+                            />
 
-                            <div
+                            <KolCard
+                                _label="Dialektisch-Behaviorale Therapie (DBT)"
                                 className="task-card"
                                 onClick={() => setSelectedCategory("DBTherapieContent")}
-                            >
-                                <h2 className="task-card-title">
-                                    Dialektisch-Behaviorale Therapie (DBT)
-                                </h2>
-                            </div>
+                            />
 
                         </div>
                     )}
 
-                    {selectedCategory === "depression" && (
+                    {selectedContent && (
                         <PsychoCard
-                            title={depressionContent.title}
-                            boxes={depressionContent.boxes}
-                            source=" ICD-10, Deutsche Gesellschaft für Psychiatrie und Psychotherapie"
-                        />
-                    )}
-
-                    {selectedCategory === "angst" && (
-                        <PsychoCard
-                            title={angstContent.title}
-                            boxes={angstContent.boxes}
-                            source=" ICD-10, Deutsche Gesellschaft für Psychiatrie und Psychotherapie"
-                        />
-                    )}
-
-                    {selectedCategory === "adhs" && (
-                        <PsychoCard
-                            title={adhsContent.title}
-                            boxes={adhsContent.boxes}
-                            source=" ICD-10, Deutsche Gesellschaft für Psychiatrie und Psychotherapie"
-                        />
-                    )}
-
-                    {selectedCategory === "Kognitive Verhaltenstherapie (KVT)" && (
-                        <PsychoCard
-                            title={KVTherapieContent.title}
-                            boxes={KVTherapieContent.boxes}
-                            source="Deutsche Gesellschaft für Psychiatrie und Psychotherapie"
-                        />
-                    )}
-                    {selectedCategory === "SuchttherapieContent" && (
-                        <PsychoCard
-                            title={SuchttherapieContent.title}
-                            boxes={SuchttherapieContent.boxes}
-                            source="Deutsche Gesellschaft für Psychiatrie und Psychotherapie"
-                        />
-                    )}
-                    {selectedCategory === "DBTherapieContent" && (
-                        <PsychoCard
-                            title={DBTherapieContent.title}
-                            boxes={DBTherapieContent.boxes}
-                            source="Deutsche Gesellschaft für Psychiatrie und Psychotherapie"
+                            title={selectedContent.content.title}
+                            boxes={selectedContent.content.boxes}
+                            source={selectedContent.source}
                         />
                     )}
                 </>
