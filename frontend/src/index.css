@@ -124,27 +124,9 @@ code {
     margin-bottom: 32px;
 }
 
-.mood-title {
-    font-size: 48px;
-    margin-bottom: 38px;
-}
-
 .mood-subtitle {
     font-size: 20px;
     color: #64748b;
-}
-
-.mood-add-button {
-    display: block;
-    margin-left: auto;
-    border: none;
-    border-radius: 24px;
-    background: #aa3bff;
-    color: #ffffff;
-    padding: 16px;
-    font-size: 18px;
-    cursor: pointer;
-    margin-bottom: 24px;
 }
 
 .mood-dialog {
@@ -155,47 +137,8 @@ code {
     border: 1px solid #e2e8f0;
 }
 
-.mood-dialog-title {
-    margin-bottom: 24px;
-}
-
-.mood-button {
-    flex: 1;
-    border: 2px solid #cbd5e1;
-    background: #f8fafc;
-    border-radius: 24px;
-    padding: 20px 12px;
-    cursor: pointer;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-}
-
-.mood-button-active {
-    border-color: #aa3bff;
-    background: #dbeafe;
-}
-
-.mood-emoji {
-    font-size: 36px;
-}
-
 .mood-label {
     font-size: 14px;
-}
-
-.mood-textarea {
-    width: 100%;
-    border-radius: 20px;
-    border: 1px solid #cbd5e1;
-    padding: 16px;
-    min-height: 120px;
-    margin-bottom: 20px;
-    resize: none;
-    box-sizing: border-box;
-    font-size: 18px;
 }
 
 .mood-error {
@@ -203,25 +146,6 @@ code {
     font-size: 18px;
     margin-bottom: 16px;
     text-align: center;
-}
-
-.mood-cancel-button,
-.mood-save-button {
-    flex: 1;
-    border: none;
-    border-radius: 18px;
-    padding: 14px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-.mood-cancel-button {
-    background: #e2e8f0;
-}
-
-.mood-save-button {
-    background: #aa3bff;
-    color: #ffffff;
 }
 
 .mood-history {
@@ -340,18 +264,6 @@ code {
     padding-top: 8px;
     font-size: 22px;
 }
-
-.mood-delete-button {
-    background: transparent;
-    border: none;
-    box-shadow: none;
-    font-size: 28px;
-    cursor: pointer;
-    padding: 6px;
-    margin-left: auto;
-    line-height: 1;
-}
-
 
 .mood-grid {
     display: grid;
@@ -562,7 +474,6 @@ code {
 
 .auth-tab,
 .mood-button,
-.task-filter-button,
-.mood-add-button {
+.task-filter-button{
     font-family: 'Jaldi', sans-serif;
 }
