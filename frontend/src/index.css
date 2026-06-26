@@ -444,3 +444,87 @@ code {
 .task-filter-button {
     font-family: 'Jaldi', sans-serif;
 }
+
+.patient-overview {
+    padding: 32px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.patient-table-card {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.patient-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.patient-table thead {
+    background: #f3e8ff;
+}
+
+.patient-table th {
+    padding: 18px 20px;
+    text-align: center;
+    color: #7e22ce;
+    font-size: 16px;
+    font-weight: 700;
+    border-bottom: 2px solid #d8b4fe;
+}
+
+.patient-table thead th:first-child {
+    border-top-left-radius: 16px;
+}
+
+.patient-table thead th:last-child {
+    border-top-right-radius: 16px;
+}
+
+.patient-table td {
+    padding: 18px 20px;
+    color: #1e293b;
+    font-size: 16px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+
+.patient-table tbody tr:hover {
+    background: #faf5ff;
+}
+
+.patient-mood {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.patient-mood-emoji {
+    font-size: 26px;
+}
+
+.patient-tasks {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.patient-active {
+    color: #2563eb;
+    font-weight: 600;
+}
+
+.patient-done {
+    color: #059669;
+    font-weight: 600;
+}
+
+.patient-assign-button {
+    width: 180px;
+}
+
+.patient-assign-button kol-button {
+    --button-width: 180px;
+}

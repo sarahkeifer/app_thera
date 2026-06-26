@@ -12,49 +12,65 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @SpringBootApplication
 public class DemoApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(DemoApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(DemoApplication.class, args);
+    }
 
-	@Bean
-	CommandLineRunner initUsers(UserRepository userRepository,
-								PasswordEncoder passwordEncoder) {
+    @Bean
+    CommandLineRunner initUsers(UserRepository userRepository,
+                                PasswordEncoder passwordEncoder) {
 
-		return args -> {
-			// THERAPIST
-			User therapist = null;
-			if (userRepository.findByEmail("therapist.demo@app.de").isEmpty()) {
+        return args -> {
+            // THERAPIST
+            User therapist = null;
+            if (userRepository.findByEmail("therapist.demo@app.de").isEmpty()) {
 
-				therapist = new User();
+                therapist = new User();
 
-				therapist.setEmail("therapist.demo@app.de");
-				therapist.setPassword(passwordEncoder.encode("TherapistDemo2026!"));
-				therapist.setRole(Role.THERAPIST);
+                therapist.setEmail("therapist.demo@app.de");
+                therapist.setPassword(passwordEncoder.encode("TherapistDemo2026!"));
+                therapist.setRole(Role.THERAPIST);
 
-				userRepository.save(therapist);
+                userRepository.save(therapist);
 
-			} else {
-				therapist = userRepository
-						.findByEmail("therapist.demo@app.de")
-						.get();
-			}
+            } else {
+                therapist = userRepository
+                        .findByEmail("therapist.demo@app.de")
+                        .get();
+            }
+            String[] firstNames = {
+                    "Anna", "Max", "Sarah", "Tom", "Mina",
+                    "Lukas", "Lea", "Noah", "Emma", "Ben"
+            };
 
-			// 10 PATIENTS
-			for (int i = 1; i <= 10; i++) {
-				String email = "patient" + i + ".demo@app.de"; 	// für 1.Patient: patient1.demo@app.de
+            String[] lastNames = {
+                    "Müller", "Schmidt", "Weber", "Fischer", "Kaya",
+                    "Braun", "Hoffmann", "Wagner", "Becker", "Richter"
+            };
+            final User finalTherapist = therapist;
+            
+            for (int i = 1; i <= 10; i++) {
+                final int index = i;
+                String email = "patient" + index + ".demo@app.de";
 
-				if (userRepository.findByEmail(email).isEmpty()) {
-					User patient = new User();
+                User patient = userRepository.findByEmail(email)
+                        .orElseGet(() -> {
+                            User newPatient = new User();
 
-					patient.setEmail(email);
-					patient.setPassword(passwordEncoder.encode("PatientDemo" + i + "!")); // für 1.Patient: PatientDemo1!
-					patient.setRole(Role.PATIENT);
+                            newPatient.setEmail(email);
+                            newPatient.setPassword(passwordEncoder.encode("PatientDemo" + index + "!"));
+                            newPatient.setRole(Role.PATIENT);
+                            newPatient.setTherapist(finalTherapist);
 
-					// Beziehung setzen
-					patient.setTherapist(therapist);
-					userRepository.save(patient);
-				}
-			}
-		};
-	}
+                            return newPatient;
+                        });
+
+                patient.setFirstName(firstNames[index - 1]);
+                patient.setLastName(lastNames[index - 1]);
+                patient.setTherapist(finalTherapist);
+
+                userRepository.save(patient);
+            }
+        };
+    }
 }
