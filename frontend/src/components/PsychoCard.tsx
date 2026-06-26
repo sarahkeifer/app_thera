@@ -1,5 +1,6 @@
 import meditationImage from "../assets/meditation.jpg";
 import herzImage from "../assets/herz.jpg";
+import {KolCard, KolHeading} from "@public-ui/react-v19";
 
 type InfoBox = {
     title: string;
@@ -13,9 +14,10 @@ type PsychoCardProps = {
     source?: string;
 };
 
-export default function PsychoCard({ title, boxes, source  }: PsychoCardProps) {
+export default function PsychoCard({title, boxes, source}: PsychoCardProps) {
     return (
         <div className="psycho-card">
+
             <div className="psycho-card-header">
 
                 <img
@@ -24,9 +26,11 @@ export default function PsychoCard({ title, boxes, source  }: PsychoCardProps) {
                     className="psycho-card-image"
                 />
 
-                <h2 className="psycho-card-title">
-                    {title}
-                </h2>
+                <KolHeading
+                    _level={2}
+                    _label={title}
+                    class="psycho-card-title"
+                />
 
                 <img
                     src={herzImage as string}
@@ -40,7 +44,10 @@ export default function PsychoCard({ title, boxes, source  }: PsychoCardProps) {
             <div className="psycho-box-grid">
                 {boxes.map((box) => (
                     <div className="psycho-info-box" key={box.title}>
-                        <h3>{box.title}</h3>
+                        <KolHeading
+                            _level={3}
+                            _label={box.title}
+                        />
 
                         {box.text && (
                             <p>{box.text}</p>
@@ -56,11 +63,14 @@ export default function PsychoCard({ title, boxes, source  }: PsychoCardProps) {
                     </div>
                 ))}
             </div>
+
             {source && (
                 <p className="psycho-source">
-                    Quelle(n) : {source}
+                    Quelle(n): {source}
                 </p>
             )}
+
+
         </div>
     );
 }
