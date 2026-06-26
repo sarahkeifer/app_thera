@@ -1,5 +1,5 @@
 import HomeMoodCard from '../../components/HomeMoodCard';
-
+import  {KolHeading}  from "@public-ui/react-v19";
 export default function HomeView() {
 
     const greeting = () => {
@@ -15,9 +15,10 @@ export default function HomeView() {
         <>
             <div className="home-header">
 
-                <h1 className="home-title">
-                    {greeting()}
-                </h1>
+                <KolHeading
+                    _level={1}
+                    _label={greeting()}
+                />
 
                 <p className="home-subtitle">
                     Wie geht es dir heute?

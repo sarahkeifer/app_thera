@@ -12,7 +12,7 @@
     --shadow: rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
     --sans: 'Jaldi', sans-serif;
-    --heading:'Jaldi', sans-serif;
+    --heading: 'Jaldi', sans-serif;
     --mono: ui-monospace, Consolas, monospace;
 
     font: 18px/145% var(--sans);
@@ -119,6 +119,7 @@ code {
     width: 1500px;
     max-width: 100%;
 }
+
 .mood-header {
     text-align: left;
     margin-bottom: 32px;
@@ -234,6 +235,7 @@ code {
     gap: 16px;
     text-align: left;
 }
+
 .mood-chart {
     display: flex;
     align-items: flex-end;
@@ -384,7 +386,7 @@ code {
 .psycho-card-title {
     text-align: center;
     font-size: 36px;
-
+    background: transparent;
     margin-top: 24px;
     margin-bottom: 24px;
 }
@@ -410,17 +412,17 @@ code {
     margin-top: 34px;
 }
 
-.psycho-info-box h3 {
-    margin: 0 0 12px;
-    color: var(--text-h);
-
+.psycho-info-box kol-heading {
+    display: block;
+    width: 100%;
+    margin-bottom: 12px;
     text-align: center;
+    background: transparent;
 }
 
 .psycho-info-box ul {
     margin: 0;
     padding-left: 20px;
-
     text-align: left;
 }
 
@@ -439,6 +441,6 @@ code {
 
 .auth-tab,
 .mood-button,
-.task-filter-button{
+.task-filter-button {
     font-family: 'Jaldi', sans-serif;
 }
