@@ -47,7 +47,7 @@ export default function PatientOverView() {
                 _label="Patienten-Übersicht"
             ></KolHeading>
 
-            <KolCard _label="" _variant="history">
+            <KolCard _label="" className="history">
                 <table className="patient-table">
                     <thead>
                     <tr>

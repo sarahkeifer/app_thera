@@ -20,7 +20,7 @@ export default function HomeMoodCard() {
 
     return (
         <>
-            <KolCard _variant="mood">
+            <KolCard className="mood" _label={""}>
                 <div className="home-mood-header">
                     <div className="home-mood-icon">❤</div>
                     <KolHeading _level={2} _label="Heutige Stimmung" />
@@ -41,7 +41,7 @@ export default function HomeMoodCard() {
 
             {pendingMood && (
                 <div className="home-mood-overlay">
-                    <KolCard _variant="dialog">
+                    <KolCard class="dialog" _label={""}>
                         <div className="home-mood-question">
                         <span className="home-mood-selected">
                             {selectedMood?.emoji}
