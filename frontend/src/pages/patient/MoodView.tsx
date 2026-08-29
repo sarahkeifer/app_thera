@@ -130,7 +130,7 @@ export default function MoodView() {
             </div>
 
             {showDialog && (
-                <KolCard _label="" _variant="dialog">
+                <KolCard _label="" className="dialog">
                     <KolHeading
                         _level={2}
                         _label={editingEntry ? "Stimmung bearbeiten" : "Stimmung eintragen"}
@@ -181,7 +181,7 @@ export default function MoodView() {
                 </KolCard>
             )}
 
-                <KolCard _label="" _variant="history">
+                <KolCard _label="" className="history">
                     <KolHeading
                         _level={2}
                         _label="Verlauf"
@@ -234,7 +234,7 @@ export default function MoodView() {
                             const mood = moods.find((m) => m.value === entry.mood);
 
                             return (
-                                <KolCard _label=" " _variant="history-item" key={entry.id}>
+                                <KolCard _label=" " className="history-item" key={entry.id}>
                                     <div className="mood-history-item-inner">
                                         <span className="mood-history-emoji">{mood?.emoji}</span>
 
@@ -296,7 +296,7 @@ export default function MoodView() {
             {showDeleteDialog && (
                 <div className="home-mood-overlay">
                     <div className="delete-dialog">
-                        <KolCard _label="" _variant="dialog">
+                        <KolCard _label="" className="dialog">
                         <p>Möchtest du diese Stimmung löschen?</p>
 
                         <div className="home-mood-actions">
