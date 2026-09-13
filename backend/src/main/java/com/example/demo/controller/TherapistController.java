@@ -4,9 +4,11 @@ import com.example.demo.entity.MoodEntry;
 import com.example.demo.entity.User;
 import com.example.demo.repository.MoodEntryRepository;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.repository.AppointmentRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/therapist")
@@ -14,11 +16,14 @@ import java.util.List;
 public class TherapistController {
     private final UserRepository userRepository;
     private final MoodEntryRepository moodEntryRepository;
+    private final AppointmentRepository appointmentRepository;
 
     public TherapistController(UserRepository userRepository,
-                               MoodEntryRepository moodEntryRepository) {
+                               MoodEntryRepository moodEntryRepository,
+                               AppointmentRepository appointmentRepository) {
         this.userRepository = userRepository;
         this.moodEntryRepository = moodEntryRepository;
+        this.appointmentRepository = appointmentRepository;
     }
 
     @GetMapping("/patients")
@@ -30,17 +35,22 @@ public class TherapistController {
 
         List<User> patients = userRepository.findByTherapistId(therapist.getId());
 
+        var now = LocalDateTime.now();
         return patients.stream()
                 .map(patient -> {
                     MoodEntry lastMood = moodEntryRepository
                             .findFirstByUserOrderByCreatedAtDesc(patient)
                             .orElse(null);
 
+                    var latestAppointment = appointmentRepository
+                            .findFirstByUserIdAndStartsAtGreaterThanEqualOrderByIdDesc(patient.getId(), now)
+                            .orElse(null);
                     return new TherapistPatientDto(
                             patient.getId(),
                             patient.getFirstName() + " " + patient.getLastName(),
                             lastMood != null ? lastMood.getMood() : null,
-                            lastMood != null ? lastMood.getCreatedAt().toString() : null
+                            lastMood != null ? lastMood.getCreatedAt().toString() : null,
+                            latestAppointment != null ? latestAppointment.getStartsAt().toString() : null
                     );
                 })
                 .toList();
@@ -50,7 +60,8 @@ public class TherapistController {
             Long id,
             String name,
             Integer lastMood,
-            String lastMoodCreatedAt
+            String lastMoodCreatedAt,
+            String nextSession
     ) {
     }
 }

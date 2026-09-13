@@ -528,3 +528,25 @@ code {
 .patient-assign-button kol-button {
     --button-width: 180px;
 }
+/* Patient calendar: layout; components use the shared KoliBri theme. */
+.patient-calendar { box-sizing: border-box; width: 100%; max-width: 800px; margin: 0 auto; padding: 30px 16px 140px; text-align: left; }
+.patient-calendar kol-button { --button-width: 100%; --button-font-size: 16px; min-width: 0; }
+.patient-calendar-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.patient-calendar-navigation { display: flex; justify-content: space-between; margin: 16px 0 24px; }
+.patient-calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
+.patient-calendar-weekday { text-align: center; font-size: 14px; }
+.patient-calendar-day { position: relative; min-width: 0; padding-bottom: 12px; }
+.patient-calendar-hint { margin: 20px 0 8px; font-size: 14px; }
+.patient-calendar-upcoming { display: grid; gap: 16px; margin: 32px 0 24px; }
+.patient-calendar-form { display: grid; gap: 24px; }
+.patient-calendar-card-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+.patient-calendar-card-actions { justify-content: flex-end; }
+.patient-calendar-card-actions kol-button { flex: 0 0 48px; }
+.calendar-booking-date { padding: 16px 20px; background: #faf5ff; border-radius: 16px; color: #582780; }
+.calendar-booking-date span { font-size: 11px; font-weight: 700; letter-spacing: 1px; }
+.calendar-booking-date p { margin-top: 4px; font-size: 22px; font-weight: 600; }
+.patient-calendar-form .patient-calendar-actions { padding-top: 20px; border-top: 1px solid #eee5f5; }
+@media (max-width: 480px) {
+    .patient-calendar-grid { gap: 3px; }
+    .patient-calendar-actions { grid-template-columns: 1fr; }
+}

@@ -89,7 +89,14 @@ export default function PatientOverView() {
                             </td>
 
                             <td>
-                                {patient.nextSession ?? "Kein Termin"}
+                                {patient.nextSession ? (
+                                    <time dateTime={patient.nextSession}>
+                                        {new Date(patient.nextSession).toLocaleString('de-DE', {
+                                            day: '2-digit', month: '2-digit', year: 'numeric',
+                                            hour: '2-digit', minute: '2-digit',
+                                        })} Uhr
+                                    </time>
+                                ) : "Kein Termin"}
                             </td>
 
                             <td>
