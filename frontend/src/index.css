@@ -180,6 +180,10 @@ code {
     line-height: 1;
 }
 
+.mood-history-emoji kol-icon {
+    font-size: 32px;
+}
+
 .mood-history-item > div {
     flex: 1;
 }
@@ -236,48 +240,50 @@ code {
     text-align: left;
 }
 
-.mood-chart {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
+.mood-line-chart {
     width: 100%;
-    min-height: 220px;
-    gap: 12px;
     margin-top: 20px;
 }
 
-.mood-chart-item {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
+.mood-line-chart-svg {
+    width: 100%;
+    height: auto;
+    display: block;
 }
 
-.mood-chart-bar {
-    width: 100%;
-    max-width: 60px;
-    min-width: 40px;
-    background: #e8def8;
-    border-radius: 14px 14px 6px 6px;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding-top: 8px;
-    font-size: 22px;
+.mood-line-chart-grid {
+    stroke: #e1e0d9;
+    stroke-width: 1;
+}
+
+.mood-line-chart-axis-label {
+    font-size: 12px;
+    fill: #898781;
+}
+
+.mood-line-chart-date-label {
+    font-size: 11px;
+    fill: #898781;
+}
+
+.mood-line-chart-line {
+    stroke: #7f77dd;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
 .mood-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 12px;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
     margin-top: 24px;
     margin-bottom: 24px;
 }
 
 .mood-grid kol-button {
     --button-width: 100%;
-    --button-font-size: 18px;
+    --button-font-size: 26px;
 }
 
 .mood-dialog-actions {
@@ -505,6 +511,10 @@ code {
     font-size: 26px;
 }
 
+.patient-mood-emoji kol-icon {
+    font-size: 26px;
+}
+
 .patient-tasks {
     display: flex;
     gap: 10px;
@@ -527,4 +537,652 @@ code {
 
 .patient-assign-button kol-button {
     --button-width: 180px;
+}
+/* ─── Therapist: Task Pool ─────────────────────────────────────────────── */
+
+.task-pool-page {
+    text-align: left;
+    padding: 32px;
+    padding-bottom: 120px;
+    box-sizing: border-box;
+}
+
+.task-pool-header-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.task-pool-header-row kol-button {
+    --button-width: 280px;
+}
+
+.task-pool-search-row {
+    max-width: 420px;
+    margin-bottom: 20px;
+}
+
+.task-pool-grid {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.task-pool-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.task-pool-card-header-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.task-pool-card-header h3 {
+    margin: 0 0 4px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #08060d;
+}
+
+.task-pool-delete-btn {
+    --button-width: 28px;
+    --button-font-size: 13px;
+    flex-shrink: 0;
+    min-height: 28px;
+    color: #dc2626;
+}
+
+.task-pool-card-category {
+    margin: 0 0 10px;
+    font-size: 13px;
+    color: #94a3b8;
+}
+
+.task-pool-card-description {
+    margin: 0 0 16px;
+    font-size: 15px;
+    color: var(--text);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.task-pool-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.task-pool-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #7e22ce;
+    flex-wrap: wrap;
+}
+
+.task-type-learn {
+    color: #7e22ce;
+}
+
+.task-type-activity {
+    color: #2563eb;
+}
+
+.task-type-reflection {
+    color: #059669;
+}
+
+.task-pool-assign-btn {
+    --button-width: 130px;
+    min-height: 40px;
+}
+
+.task-pool-empty {
+    margin-top: 24px;
+    color: var(--text);
+}
+
+/* ─── Therapist: Task Modals (New Task / Assign Task) ──────────────────── */
+
+.task-modal {
+    width: 640px;
+    max-width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+.task-form-field {
+    margin-bottom: 20px;
+}
+
+.task-form-label {
+    display: block;
+    font-size: 15px;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 8px;
+}
+
+.task-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.task-form-type-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.task-modal-error {
+    color: #dc2626;
+    font-size: 15px;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.task-modal-error:empty {
+    display: none;
+}
+
+.task-assign-preview {
+    background: #f8fafc;
+    border-radius: 20px;
+    padding: 18px;
+    margin-bottom: 20px;
+}
+
+.task-assign-preview h3 {
+    margin: 0 0 6px;
+    font-size: 18px;
+    color: #08060d;
+}
+
+.task-assign-preview p {
+    margin: 0 0 10px;
+    font-size: 15px;
+    color: var(--text);
+}
+
+.task-assign-patient-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.task-assign-patient-btn {
+    --button-width: 100%;
+}
+
+.task-assign-success {
+    text-align: center;
+    font-size: 17px;
+    font-weight: 600;
+    color: #059669;
+    padding: 20px 0;
+}
+
+/* ─── Therapist: Patient Overview extras ───────────────────────────────── */
+
+.patient-name-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    text-align: left;
+}
+
+.patient-name {
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.patient-email {
+    font-size: 13px;
+    color: #94a3b8;
+}
+
+/* ─── Patient: Zugewiesene Aufgaben (TaskView) ─────────────────────────── */
+
+.assigned-tasks-section {
+    margin-top: 8px;
+    margin-bottom: 28px;
+}
+
+.assigned-tasks-heading {
+    font-size: 20px;
+    font-weight: 600;
+    color: #08060d;
+    margin: 0 0 12px;
+}
+
+.assigned-tasks-list {
+    display: grid;
+    gap: 12px;
+}
+
+.assigned-task-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.assigned-task-card.completed {
+    opacity: 0.7;
+}
+
+.assigned-task-card.unavailable {
+    opacity: 0.55;
+    filter: grayscale(0.6);
+}
+
+.assigned-task-card kol-button {
+    align-self: flex-start;
+    --button-width: 220px;
+}
+
+/* Der kleine X-Löschen-Button in der Kartenkopfzeile soll klein bleiben,
+   nicht die 220px-Breite der übrigen Aufgaben-Buttons übernehmen. */
+.assigned-task-card kol-button.task-pool-delete-btn {
+    align-self: auto;
+    --button-width: 28px;
+    --button-font-size: 13px;
+    min-height: 28px;
+}
+
+.assigned-task-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 12px;
+}
+
+.assigned-task-header kol-heading {
+    flex: 1 1 auto;
+    min-width: 160px;
+}
+
+.assigned-task-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.assigned-task-status-badge {
+    background: #dcfce7;
+    color: #15803d;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+.assigned-task-unavailable-badge {
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+/* ─── Patient: Empfohlene Lerninhalte (Krankheiten/Therapieformen) ─────── */
+
+.content-topic-card-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.content-topic-recommended-badge {
+    background: #ede9fe;
+    color: #6d28d9;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+.assigned-task-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #7e22ce;
+    flex-wrap: wrap;
+}
+
+/* ─── Gemeinsame DetailDialog-Hülle (Aufgaben & Lerninhalte) ───────────── */
+
+.detail-dialog {
+    width: 640px;
+    max-width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.detail-dialog-close {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 4px;
+}
+
+.detail-dialog-close kol-button {
+    --button-width: 44px;
+}
+
+.task-detail-section {
+    margin: 18px 0;
+}
+
+.task-detail-section h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #334155;
+    margin: 0 0 6px;
+}
+
+.task-detail-section p {
+    margin: 0;
+    color: var(--text);
+    font-size: 16px;
+}
+
+.task-detail-actions {
+    margin-top: 8px;
+}
+
+.task-detail-actions kol-button {
+    --button-width: 240px;
+}
+
+.assigned-task-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.assigned-task-actions kol-button {
+    --button-width: auto;
+    min-width: 180px;
+}
+
+.task-pool-card-materials {
+    margin: 0 0 12px;
+    font-size: 14px;
+    color: #64748b;
+}
+
+/* ─── Therapist: Aufgabe löschen (Bestätigungsdialog) ──────────────────── */
+
+.confirm-delete-dialog {
+    width: 480px;
+    max-width: 100%;
+}
+
+.confirm-delete-text {
+    color: var(--text);
+    font-size: 16px;
+    margin: 12px 0 24px;
+}
+
+.confirm-delete-btn {
+    color: #dc2626;
+}
+
+/* ─── Home: Offene-Aufgaben-Widget ─────────────────────────────────────── */
+
+.home-tasks {
+    margin-top: 16px;
+}
+
+.home-tasks-empty {
+    color: var(--text);
+    font-size: 15px;
+}
+
+.home-tasks-list {
+    margin: 8px 0 16px;
+    padding-left: 20px;
+    color: #1e293b;
+}
+
+.home-tasks-list li {
+    margin-bottom: 4px;
+}
+
+.home-tasks-button kol-button {
+    --button-width: 220px;
+}
+
+/* ─── Patient: Vereinheitlichte Lerninhalte + Aufgaben-Liste ───────────── */
+
+.lerninhalte-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+}
+
+.lerninhalte-back-btn {
+    display: inline-block;
+    margin-bottom: 16px;
+}
+
+.lerninhalte-back-btn kol-button {
+    --button-width: 120px;
+}
+
+/* ─── Patient: Notizen (NotesView) ─────────────────────────────────────── */
+
+.notes-page {
+    text-align: left;
+    padding-bottom: 120px;
+}
+
+.notes-header {
+    margin-bottom: 8px;
+}
+
+.notes-subtitle {
+    font-size: 18px;
+    color: #64748b;
+    margin: 0 0 24px;
+}
+
+.notes-add-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 28px;
+}
+
+.notes-add-row kol-button {
+    flex: 1;
+}
+
+.notes-form-field {
+    margin-bottom: 20px;
+}
+
+.notes-modal {
+    width: 560px;
+    max-width: 100%;
+}
+
+.notes-modal-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.notes-modal-icon {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+
+.notes-modal-icon.note-type-text {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+.notes-modal-icon.note-type-audio {
+    background: #f3e8ff;
+    color: #7e22ce;
+}
+
+.notes-audio-record {
+    text-align: center;
+    padding: 32px 0;
+}
+
+.notes-audio-record-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #f3e8ff;
+    color: #7e22ce;
+    font-size: 34px;
+    margin-bottom: 16px;
+}
+
+.notes-audio-record-btn {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #dc2626;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+    cursor: not-allowed;
+    box-shadow: 0 8px 20px rgba(220, 38, 38, 0.25);
+}
+
+.notes-audio-record-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    background: white;
+}
+
+.notes-audio-record p {
+    color: #475569;
+    margin: 0;
+}
+
+.notes-audio-hint {
+    font-size: 13px;
+    color: #94a3b8;
+    margin-top: 12px !important;
+}
+
+.notes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.notes-item-inner {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    text-align: left;
+}
+
+.notes-item-icon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.notes-item-icon.note-type-text {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+.notes-item-icon.note-type-audio {
+    background: #f3e8ff;
+    color: #7e22ce;
+}
+
+.notes-item-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notes-item-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.notes-item-title {
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+    font-size: 17px;
+}
+
+.notes-item-preview {
+    color: #64748b;
+    font-size: 15px;
+    margin: 4px 0 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.notes-item-duration {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f3e8ff;
+    color: #7e22ce;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 999px;
+    margin: 4px 0 8px;
+}
+
+.notes-item-meta {
+    display: flex;
+    gap: 6px;
+    font-size: 13px;
+    color: #94a3b8;
 }
