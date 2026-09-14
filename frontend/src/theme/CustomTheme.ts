@@ -115,6 +115,105 @@ export const CustomTheme = (
                 width: 100%;
                 min-height: 64px;
             }
+            :host(.calendar-date) button {
+                background: white;
+                color: #334155;
+                border: 1px solid #e2e8f0;
+                min-height: 44px;
+                padding: 8px 0;
+                border-radius: 12px;
+            }
+            :host(.calendar-date) button:hover:not(:disabled) {
+                background: #f8fafc;
+                border-color: #7e22ce;
+            }
+            :host(.calendar-date-booked) button,
+            :host(.calendar-date-booked) button:hover:not(:disabled) {
+                background: #f3e8ff;
+                color: #6b21a8;
+                border-color: #c084fc;
+            }
+            :host(.calendar-date-today) button,
+            :host(.calendar-date-today) button:hover:not(:disabled) {
+                background: #7e22ce;
+                color: white;
+                border-color: #7e22ce;
+                font-weight: 700;
+            }
+            :host(.calendar-date-today.calendar-date-booked) button {
+                outline: 2px solid #7e22ce;
+                outline-offset: 2px;
+            }
+            :host(.calendar-date) button:focus-visible,
+            :host(.calendar-arrow) button:focus-visible {
+                outline: 3px solid #2563eb;
+                outline-offset: 3px;
+            }
+            :host(.calendar-arrow) button {
+                width: 44px;
+                min-height: 44px;
+                padding: 8px;
+                background: transparent;
+                color: #7e22ce;
+                border: 0;
+            }
+            :host(.calendar-arrow) button:hover { background: #f3e8ff; }
+            .calendar-arrow-left::before { content: '←'; }
+            .calendar-arrow-right::before { content: '→'; }
+            .calendar-arrow-left, .calendar-arrow-right { font-size: 28px; line-height: 1; }
+            :host(.calendar-icon-action) button { width: 48px; min-height: 48px; padding: 10px; }
+            .calendar-edit-icon::before { content: '✎'; }
+            .calendar-delete-icon::before { content: '×'; }
+            .calendar-edit-icon, .calendar-delete-icon { font-size: 26px; line-height: 1; }
+        `,
+
+        'kol-single-select': `
+            :host(.calendar-time-select) label { font-size: 22px; font-weight: 600; }
+            :host(.calendar-time-select) .kol-input-container { margin-top: 16px; position: relative; }
+            :host(.calendar-time-select) input {
+                width: 100%; min-height: 52px; padding: 12px 16px;
+                font-family: 'Jaldi', sans-serif; font-size: 22px;
+                background: #faf5ff; color: #38234d;
+                border: 1px solid #d8b4fe; border-radius: 14px;
+            }
+            :host(.calendar-time-select) input:focus-visible {
+                outline: 3px solid #7e22ce; outline-offset: 3px;
+            }
+            :host(.calendar-time-select) .kol-custom-suggestions-options-group {
+                top: 100%; bottom: auto; left: 0; right: 0;
+                max-height: min(162px, 30dvh) !important;
+                overflow-y: auto; overscroll-behavior: contain;
+                background: white; color: #38234d; border: 1px solid #d8b4fe;
+                border-radius: 12px; box-shadow: 0 8px 24px rgba(59, 27, 88, .14);
+                z-index: 10;
+            }
+            :host(.calendar-time-select) .kol-custom-suggestions-option { padding: 10px 14px; font-size: 20px; }
+            :host(.calendar-time-select) .kol-custom-suggestions-option:hover,
+            :host(.calendar-time-select) .kol-custom-suggestions-option:focus { background: #f3e8ff; }
+            :host(.calendar-time-select) .kol-custom-suggestions-toggle {
+                position: absolute; right: 16px; top: 50%; transform: translateY(-50%); cursor: pointer;
+            }
+            :host(.calendar-time-select) .kol-custom-suggestions-toggle::before { content: '⌄'; font-size: 24px; }
+        `,
+
+        'kol-input-radio': `
+            :host(.calendar-type-choice) fieldset {
+                border: 1px solid #d8b4fe; border-radius: 18px;
+                padding: 20px; background: #faf5ff; color: #38234d;
+            }
+            :host(.calendar-type-choice) legend { font-size: 20px; font-weight: 600; margin-bottom: 20px; }
+            :host(.calendar-type-choice) .kol-form-field__input { padding-top: 20px; }
+            :host(.calendar-type-choice) .kol-field-control {
+                padding: 14px 18px; border: 1px solid #e9d5ff;
+                border-radius: 12px; background: #f3e8ff; color: #582780;
+                font-size: 20px; margin-bottom: 12px;
+            }
+            :host(.calendar-type-choice) .kol-field-control:has(input:checked) {
+                background: #e9d5ff; border-color: #7e22ce;
+            }
+            :host(.calendar-type-choice) label { cursor: pointer; background: transparent; padding: 8px; }
+            :host(.calendar-type-choice) input { accent-color: #7e22ce; }
+            :host(.calendar-type-choice) input:focus-visible { outline: 3px solid #7e22ce; outline-offset: 3px; }
         `,
 
         // ─── Inputs ────────────────────────────────────────────────────────────
@@ -319,6 +418,16 @@ export const CustomTheme = (
         // auf dieselben Regeln zu.
 
         'kol-card': `
+            :host(.calendar-appointment-card) {
+                background: #f3edf9;
+                border-color: #ded0ee;
+                color: #38234d;
+            }
+            :host(.calendar-booking-card) {
+                background: #fff; border: 1px solid #e9d5ff;
+                border-radius: 28px; padding: 28px;
+                box-shadow: 0 24px 70px rgba(59, 27, 88, .18);
+            }
             :host {
                 display: block;
                 background: white;

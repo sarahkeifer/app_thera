@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { KolButton, KolCard, KolHeading, KolIcon, KolInputDate, KolInputText } from "@public-ui/react-v19";
 import { getMoodByValue } from "../../data/moods";
+import {useEffect, useState} from "react";
+import {KolAlert, KolButton, KolCard, KolHeading} from "@public-ui/react-v19";
 
 type PatientOverviewItem = {
     id: number;
@@ -47,6 +49,42 @@ export default function PatientOverView() {
         })
             .then((res) => res.json())
             .then((data) => setTasks(data));
+    const [loadError, setLoadError] = useState(false);
+
+    useEffect(() => {
+        const controller = new AbortController();
+        let pending = false;
+        async function loadPatients() {
+            if (pending || document.hidden) return;
+            pending = true;
+            try {
+                const response = await fetch("http://localhost:8080/api/therapist/patients", {
+                    headers: {"X-User-Id": localStorage.getItem("userId") || ""},
+                    signal: controller.signal,
+                    cache: "no-store",
+                });
+                if (!response.ok) throw new Error();
+                const data: PatientOverviewItem[] = await response.json();
+                if (!controller.signal.aborted) {
+                    setPatients(data);
+                    setLoadError(false);
+                }
+            } catch {
+                if (!controller.signal.aborted) setLoadError(true);
+            } finally {
+                pending = false;
+            }
+        }
+        void loadPatients();
+        const timer = window.setInterval(loadPatients, 30000);
+        window.addEventListener("focus", loadPatients);
+        document.addEventListener("visibilitychange", loadPatients);
+        return () => {
+            controller.abort();
+            window.clearInterval(timer);
+            window.removeEventListener("focus", loadPatients);
+            document.removeEventListener("visibilitychange", loadPatients);
+        };
     }, []);
 
     const filteredPatients = patients.filter(
@@ -72,6 +110,10 @@ export default function PatientOverView() {
             </div>
 
             <KolCard _label="" className="history">
+            {loadError && <KolAlert _type="error" _label="Aktualisierung fehlgeschlagen">
+                Die Patientenübersicht konnte nicht aktualisiert werden. Angezeigte Termine sind möglicherweise veraltet. Die Aktualisierung wird automatisch erneut versucht.
+            </KolAlert>}
+            <KolCard _label="" _variant="history">
                 <table className="patient-table">
                     <thead>
                     <tr>
@@ -119,6 +161,17 @@ export default function PatientOverView() {
                                     <span className="patient-done">{patient.completedTasks}</span>
                                     <span>erledigt</span>
                                 </div>
+                            </td>
+
+                            <td>
+                                {patient.nextSession ? (
+                                    <time dateTime={patient.nextSession}>
+                                        {new Date(patient.nextSession).toLocaleString('de-DE', {
+                                            day: '2-digit', month: '2-digit', year: 'numeric',
+                                            hour: '2-digit', minute: '2-digit',
+                                        })} Uhr
+                                    </time>
+                                ) : "Kein Termin"}
                             </td>
 
                             <td>
