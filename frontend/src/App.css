@@ -197,13 +197,21 @@
 }
 
 .footer-nav a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
     color: #6b7280;
     text-decoration: none;
-    padding: 10px 16px;
+    padding: 8px 14px;
     border-radius: 16px;
     transition: all 0.2s ease;
-    font-size: 18px;
+    font-size: 13px;
     font-weight: 500;
+}
+
+.footer-nav a kol-icon {
+    font-size: 22px;
 }
 
 .footer-nav a:hover {
@@ -216,6 +224,35 @@
     color: #9333ea;
     font-weight: 600;
     border-bottom: none;
+}
+
+.logout-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 20;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid #e5e5e5;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+}
+
+.logout-btn kol-icon {
+    font-size: 20px;
+}
+
+.logout-btn:hover {
+    color: #dc2626;
+    background: #fef2f2;
+    border-color: #fecaca;
 }
 
 .home-header {
@@ -254,14 +291,13 @@
 
 .home-mood-row {
     display: flex;
-    gap: 12px;
+    gap: 6px;
     justify-content: space-around;
-    --button-width: 200px;
 }
 
 .home-mood-row kol-button {
-    --button-width: 80px;
-    --button-font-size: 36px;
+    --button-width: 46px;
+    --button-font-size: 24px;
 }
 
 .home-mood-overlay {
@@ -287,6 +323,10 @@
     font-size: 35px;
     line-height: 1;
     margin-bottom: 0;
+}
+
+.home-mood-selected kol-icon {
+    font-size: 35px;
 }
 
 .home-mood-actions {

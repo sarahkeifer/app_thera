@@ -1,4 +1,5 @@
 import HomeMoodCard from '../../components/HomeMoodCard';
+import HomeTasksCard from '../../components/HomeTasksCard';
 import  {KolHeading}  from "@public-ui/react-v19";
 export default function HomeView() {
 
@@ -27,6 +28,8 @@ export default function HomeView() {
             </div>
 
             <HomeMoodCard />
+
+            <HomeTasksCard />
         </>
     );
 

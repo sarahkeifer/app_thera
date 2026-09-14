@@ -1,14 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { KolButton, KolCard, KolHeading } from "@public-ui/react-v19";
-
-const moods = [
-    { emoji: '🤩', label: 'Sehr gut', value: 5 },
-    { emoji: '😊', label: 'Gut', value: 4 },
-    { emoji: '😐', label: 'Okay', value: 3 },
-    { emoji: '😔', label: 'Nicht gut', value: 2 },
-    { emoji: '😢', label: 'Schlecht', value: 1 },
-];
+import { KolButton, KolCard, KolHeading, KolIcon } from "@public-ui/react-v19";
+import { moods } from "../data/moods";
 
 export default function HomeMoodCard() {
     const navigate = useNavigate();
@@ -20,7 +13,7 @@ export default function HomeMoodCard() {
 
     return (
         <>
-            <KolCard _variant="mood">
+            <KolCard className="mood" _label={""}>
                 <div className="home-mood-header">
                     <div className="home-mood-icon">❤</div>
                     <KolHeading _level={2} _label="Heutige Stimmung" />
@@ -30,8 +23,9 @@ export default function HomeMoodCard() {
                     {moods.map((mood) => (
                         <KolButton
                             key={mood.value}
-                            _label={mood.emoji}
-                            _hideLabel={false}
+                            _icons={mood.icon}
+                            _label={mood.label}
+                            _hideLabel
                             _variant="secondary"
                             _on={{ onClick: () => setPendingMood(mood.value) }}
                         />
@@ -41,11 +35,13 @@ export default function HomeMoodCard() {
 
             {pendingMood && (
                 <div className="home-mood-overlay">
-                    <KolCard _variant="dialog">
+                    <KolCard class="dialog" _label={""}>
                         <div className="home-mood-question">
-                        <span className="home-mood-selected">
-                            {selectedMood?.emoji}
-                        </span>
+                            <span className="home-mood-selected">
+                                {selectedMood && (
+                                    <KolIcon _icons={selectedMood.icon} _label={selectedMood.label} />
+                                )}
+                            </span>
                             <p>Möchtest du deine Stimmung speichern?</p>
                         </div>
 

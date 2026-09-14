@@ -1,3 +1,60 @@
+// IcoFont (https://icofont.com/) wird als Web-Font per @font-face geladen.
+// WICHTIG: Ein globaler <link>-Tag in index.html reicht NICHT aus, da KoliBri
+// seine Icons per Shadow DOM rendert (siehe kol-button-wc / kol-icon interner
+// Aufbau) und externe <link>-Stylesheets Shadow Roots nicht durchdringen.
+// Deshalb wird das benötigte CSS hier direkt über KoliBris eigenes
+// Theme-Patch-System injiziert (Adopted Stylesheets), das auch verschachtelte
+// Shadow Roots erreicht. Enthält nur die im Projekt tatsächlich verwendeten
+// Icon-Glyphen (nicht das komplette 2100+ Icon-Set), um die Stylesheet-Größe
+// gering zu halten. Bei Bedarf für weitere Icons einfach weitere
+// ".icofont-<name>:before { content: "\\XXXX"; }"-Zeilen ergänzen (Codepoints
+// unter https://unpkg.com/@icon/icofont@1.0.1-alpha.1/icofont.css nachschlagen).
+const iconFontCss = `
+    @font-face {
+        font-family: "icofont";
+        src: url('https://unpkg.com/@icon/icofont@1.0.1-alpha.1/icofont.eot');
+        src: url('https://unpkg.com/@icon/icofont@1.0.1-alpha.1/icofont.eot?#iefix') format('eot'),
+            url('https://unpkg.com/@icon/icofont@1.0.1-alpha.1/icofont.woff2') format('woff2'),
+            url('https://unpkg.com/@icon/icofont@1.0.1-alpha.1/icofont.woff') format('woff'),
+            url('https://unpkg.com/@icon/icofont@1.0.1-alpha.1/icofont.ttf') format('truetype'),
+            url('https://unpkg.com/@icon/icofont@1.0.1-alpha.1/icofont.svg#icofont') format('svg');
+    }
+
+    .icofont {
+        font-family: "icofont" !important;
+        font-style: normal;
+        font-weight: normal;
+        speak: none;
+        text-decoration: none;
+        text-transform: none;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Navigationsleisten (PatientNav / TherapistNav) */
+    .icofont-home:before { content: "\\ef47"; }
+    .icofont-calendar:before { content: "\\eecd"; }
+    .icofont-notepad:before { content: "\\efab"; }
+    .icofont-book-alt:before { content: "\\ead1"; }
+    .icofont-users-alt-3:before { content: "\\ed08"; }
+    .icofont-tasks-alt:before { content: "\\f006"; }
+
+    /* Mood-Skala (MoodView / HomeMoodCard / PatientOverView) */
+    .icofont-nerd-smile:before { content: "\\eafd"; }
+    .icofont-wink-smile:before { content: "\\eb06"; }
+    .icofont-laughing:before { content: "\\eafc"; }
+    .icofont-simple-smile:before { content: "\\eb02"; }
+    .icofont-slightly-smile:before { content: "\\eb03"; }
+    .icofont-expressionless:before { content: "\\eafa"; }
+    .icofont-sad:before { content: "\\eb01"; }
+
+    /* Notizen (NotesView: Text- vs. Audio-Notiz) */
+    .icofont-file-text:before { content: "\\eb2a"; }
+    .icofont-mic:before { content: "\\ef95"; }
+    .icofont-clock-time:before { content: "\\eedc"; }
+    .icofont-ui-record:before { content: "\\ec7d"; }
+`;
+
 export const CustomTheme = (
     patch: (name: string, map: Record<string, string | undefined>) => string
 ) => {
@@ -7,6 +64,8 @@ export const CustomTheme = (
         // ─── Buttons ───────────────────────────────────────────────────────────
 
         'kol-button': `
+            ${iconFontCss}
+
             button {
                 font-family: 'Jaldi', sans-serif;
                 width: var(--button-width, 420px);
@@ -149,6 +208,12 @@ export const CustomTheme = (
             :host(.calendar-type-choice) label { cursor: pointer; background: transparent; padding: 8px; }
             :host(.calendar-type-choice) input { accent-color: #7e22ce; }
             :host(.calendar-type-choice) input:focus-visible { outline: 3px solid #7e22ce; outline-offset: 3px; }
+
+            /* Notiz-Typ-Buttons (Textnotiz / Audio) in NotesView */
+            :host(.note-type-btn) button {
+                width: 100%;
+                min-height: 64px;
+            }
         `,
 
         // ─── Inputs ────────────────────────────────────────────────────────────
@@ -250,6 +315,64 @@ export const CustomTheme = (
             }
         `,
 
+        'kol-input-date': `
+            input {
+                font-family: 'Jaldi', sans-serif;
+                width: 100%;
+                min-height: 56px;
+                box-sizing: border-box;
+                border: 1px solid #e2e8f0;
+                border-radius: 18px;
+                background: white;
+                color: #1e293b;
+                padding: 0 18px;
+                font-size: 16px;
+                transition:
+                    border-color 0.2s ease,
+                    box-shadow 0.2s ease;
+            }
+
+            input:hover {
+                border-color: #cbd5e1;
+            }
+
+            input:focus {
+                border-color: #aa3bff;
+                box-shadow: 0 0 0 4px rgba(170, 59, 255, 0.12);
+                outline: none;
+            }
+        `,
+
+        'kol-input-file': `
+            .kol-input-container {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                width: 100%;
+                min-height: 56px;
+                box-sizing: border-box;
+                border: 1px dashed #cbd5e1;
+                border-radius: 18px;
+                background: #f8fafc;
+                padding: 8px 16px;
+            }
+
+            .kol-input-container__filename {
+                font-family: 'Jaldi', sans-serif;
+                font-size: 15px;
+                color: #64748b;
+                flex: 1;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .kol-input-container--is-dragover {
+                border-color: #aa3bff;
+                background: rgba(170, 59, 255, 0.06);
+            }
+        `,
+
         // ─── Textarea (mood-textarea) ───────────────────────────────────────────
 
         'kol-textarea': `
@@ -286,6 +409,13 @@ export const CustomTheme = (
         `,
 
         // ─── Card (auth-card, mood-card, task-card) ────────────────────────────
+        //
+        // WICHTIG: Alle Varianten sind hier ABSICHTLICH doppelt definiert -
+        // einmal als Attribut-Selektor (:host([_variant="..."])) und einmal
+        // als Klassen-Selektor (:host(.klassenname)). Im Code wird teils
+        // "_variant='dialog'" und teils "className='dialog'" verwendet -
+        // damit unabhängig davon immer gestylt wird, greifen beide Selektoren
+        // auf dieselben Regeln zu.
 
         'kol-card': `
             :host(.calendar-appointment-card) {
@@ -337,24 +467,27 @@ export const CustomTheme = (
                 border-radius: 28px;
                 padding: 24px;
             }
-            
-            :host([_variant="dialog"]) {
+
+            :host([_variant="dialog"]),
+            :host(.dialog) {
               background: white;
               border-radius: 32px;
               padding: 24px;
               width: 100%;
               max-width: 500px;
             }
-            
-            :host([_variant="history"]) {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 32px;
-            padding: 24px;
-            margin-top: 32px;
+
+            :host([_variant="history"]),
+            :host(.history) {
+                background: #ffffff;
+                border: 1px solid #e2e8f0;
+                border-radius: 32px;
+                padding: 24px;
+                margin-top: 32px;
             }
-            
-            :host([_variant="history-item"]) {
+
+            :host([_variant="history-item"]),
+            :host(.history-item) {
                 background: #f8fafc;
                 border: none;
                 border-radius: 24px;
@@ -362,7 +495,7 @@ export const CustomTheme = (
                 margin-bottom: 14px;
                 box-shadow: none;
             }
-            
+
             .kol-card__header,
             .kol-headline--strong {
                 font-weight: 400;
@@ -383,6 +516,23 @@ export const CustomTheme = (
               box-shadow:
                 rgba(168, 85, 247, 0.18) 0 16px 30px -8px,
                 rgba(0, 0, 0, 0.08) 0 6px 12px -4px;
+            }
+
+            /* note-card: Notiz-Karte in NotesView, angelehnt an task-card */
+            :host(.note-card) {
+                border-radius: 24px;
+                padding: 20px;
+                cursor: pointer;
+                transition:
+                    box-shadow 0.2s ease,
+                    border-color 0.2s ease;
+            }
+
+            :host(.note-card:hover) {
+                border-color: #c084fc;
+                box-shadow:
+                    rgba(168, 85, 247, 0.14) 0 10px 20px -6px,
+                    rgba(0, 0, 0, 0.06) 0 4px 8px -2px;
             }
 
             div.header {
@@ -550,6 +700,10 @@ export const CustomTheme = (
                 font-size: 14px;
             }
         `,
+
+        // ─── Icon (eigenständige KolIcon-Verwendung, z.B. in Nav-Leisten) ───────
+
+        'kol-icon': iconFontCss,
 
     });
 };

@@ -4,21 +4,124 @@ import {
     KolButton,
     KolCard,
     KolHeading,
+    KolIcon,
     KolTextarea
 } from "@public-ui/react-v19";
+import { moods, getMoodByValue } from "../../data/moods";
 
-const moods = [
-    { emoji: '🤩', label: 'Sehr gut', value: 5 },
-    { emoji: '😊', label: 'Gut', value: 4 },
-    { emoji: '😐', label: 'Okay', value: 3},
-    { emoji: '😔', label: 'Nicht gut', value: 2 },
-    { emoji: '😢', label: 'Schlecht', value: 1 },
-];
 interface MoodEntry {
     id: string;
     createdAt: string;
     mood: number;
     note: string;
+}
+
+// Rot-Grün-Farbskala für die 7 Stimmungsstufen (1 = sehr schlecht, 7 = ausgezeichnet).
+const moodLineColors = ["#dc2626", "#ea580c", "#f59e0b", "#eab308", "#84cc16", "#65a30d", "#16a34a"];
+
+function moodColor(value: number): string {
+    return moodLineColors[value - 1] ?? "#888780";
+}
+
+function MoodLineChart({ entries }: { entries: MoodEntry[] }) {
+    const chronological = [...entries].reverse();
+
+    const width = 700;
+    const height = 220;
+    const paddingX = 24;
+    const paddingTop = 20;
+    const paddingBottom = 36;
+    const plotWidth = width - paddingX * 2;
+    const plotHeight = height - paddingTop - paddingBottom;
+
+    const points = chronological.map((entry, index) => {
+        const x =
+            chronological.length === 1
+                ? paddingX + plotWidth / 2
+                : paddingX + (index / (chronological.length - 1)) * plotWidth;
+        const y = paddingTop + plotHeight - ((entry.mood - 1) / 6) * plotHeight;
+
+        return { x, y, entry };
+    });
+
+    const linePath = points
+        .map((point, index) => `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`)
+        .join(" ");
+
+    const labelEvery = Math.max(1, Math.ceil(points.length / 8));
+
+    return (
+        <div className="mood-line-chart">
+            <svg
+                viewBox={`0 0 ${width} ${height}`}
+                className="mood-line-chart-svg"
+                role="img"
+                aria-label="Verlauf der eingetragenen Stimmungen über die Zeit"
+            >
+                {[1, 4, 7].map((level) => {
+                    const y = paddingTop + plotHeight - ((level - 1) / 6) * plotHeight;
+
+                    return (
+                        <g key={level}>
+                            <line
+                                x1={paddingX}
+                                y1={y}
+                                x2={width - paddingX}
+                                y2={y}
+                                className="mood-line-chart-grid"
+                            />
+                            <text
+                                x={paddingX - 8}
+                                y={y + 4}
+                                className="mood-line-chart-axis-label"
+                                textAnchor="end"
+                            >
+                                {level}
+                            </text>
+                        </g>
+                    );
+                })}
+
+                {points.length > 1 && <path d={linePath} className="mood-line-chart-line" fill="none" />}
+
+                {points.map((point, index) => (
+                    <g key={point.entry.id}>
+                        <circle
+                            cx={point.x}
+                            cy={point.y}
+                            r={6}
+                            fill={moodColor(point.entry.mood)}
+                            stroke="#fff"
+                            strokeWidth={2}
+                        >
+                            <title>
+                                {new Date(point.entry.createdAt).toLocaleDateString("de-DE", {
+                                    day: "2-digit",
+                                    month: "short",
+                                })}
+                                {": "}
+                                {getMoodByValue(point.entry.mood)?.label}
+                            </title>
+                        </circle>
+
+                        {index % labelEvery === 0 && (
+                            <text
+                                x={point.x}
+                                y={height - 10}
+                                className="mood-line-chart-date-label"
+                                textAnchor="middle"
+                            >
+                                {new Date(point.entry.createdAt).toLocaleDateString("de-DE", {
+                                    day: "2-digit",
+                                    month: "short",
+                                })}
+                            </text>
+                        )}
+                    </g>
+                ))}
+            </svg>
+        </div>
+    );
 }
 
 export default function MoodView() {
@@ -130,7 +233,7 @@ export default function MoodView() {
             </div>
 
             {showDialog && (
-                <KolCard _label="" _variant="dialog">
+                <KolCard _label="" className="dialog">
                     <KolHeading
                         _level={2}
                         _label={editingEntry ? "Stimmung bearbeiten" : "Stimmung eintragen"}
@@ -140,7 +243,9 @@ export default function MoodView() {
                         {moods.map((mood) => (
                             <KolButton
                                 key={mood.value}
-                                _label={`${mood.emoji} ${mood.label}`}
+                                _icons={mood.icon}
+                                _label={mood.label}
+                                _hideLabel
                                 _variant={selectedMood === mood.value ? "primary" : "secondary"}
                                 _on={{
                                     onClick: () => {
@@ -181,7 +286,7 @@ export default function MoodView() {
                 </KolCard>
             )}
 
-                <KolCard _label="" _variant="history">
+                <KolCard _label="" className="history">
                     <KolHeading
                         _level={2}
                         _label="Verlauf"
@@ -206,37 +311,19 @@ export default function MoodView() {
                     {entries.length === 0 ? (
                         <p>Noch keine Einträge vorhanden.</p>
                     ) : viewMode === "visual" ? (
-                        <div className="mood-chart">
-                            {[...entries].reverse().map((entry) => {
-                                const mood = moods.find((m) => m.value === entry.mood);
-
-                                return (
-                                    <div className="mood-chart-item" key={entry.id}>
-                                        <div
-                                            className="mood-chart-bar"
-                                            style={{height: `${entry.mood * 30}px`}}
-                                        >
-                                            {mood?.emoji}
-                                        </div>
-
-                                        <small>
-                                            {new Date(entry.createdAt).toLocaleDateString("de-DE", {
-                                                day: "2-digit",
-                                                month: "short",
-                                            })}
-                                        </small>
-                                    </div>
-                                );
-                            })}
-                        </div>
+                        <MoodLineChart entries={entries} />
                     ) : (
                         entries.map((entry) => {
-                            const mood = moods.find((m) => m.value === entry.mood);
+                            const mood = getMoodByValue(entry.mood);
 
                             return (
-                                <KolCard _label=" " _variant="history-item" key={entry.id}>
+                                <KolCard _label=" " className="history-item" key={entry.id}>
                                     <div className="mood-history-item-inner">
-                                        <span className="mood-history-emoji">{mood?.emoji}</span>
+                                        <span className="mood-history-emoji">
+                                            {mood && (
+                                                <KolIcon _icons={mood.icon} _label={mood.label} />
+                                            )}
+                                        </span>
 
                                         <div className="mood-history-content">
                                             <div className="mood-history-top">
@@ -296,7 +383,7 @@ export default function MoodView() {
             {showDeleteDialog && (
                 <div className="home-mood-overlay">
                     <div className="delete-dialog">
-                        <KolCard _label="" _variant="dialog">
+                        <KolCard _label="" className="dialog">
                         <p>Möchtest du diese Stimmung löschen?</p>
 
                         <div className="home-mood-actions">
