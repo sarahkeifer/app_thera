@@ -86,7 +86,7 @@ class AppointmentTests {
     }
 
     @Test
-    void therapistSeesLatestCreatedUpcomingAppointmentOfAssignedPatients() throws Exception {
+    void therapistSeesNextUpcomingAppointmentAndRefreshesAfterChanges() throws Exception {
         var therapist = user("therapist-calendar@example.test");
         var patient = user("patient-calendar@example.test");
         patient.setTherapist(therapist);
@@ -105,7 +105,21 @@ class AppointmentTests {
         mvc.perform(get("/api/therapist/patients").header("X-User-Id", therapist.getId()))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.length()").value(1))
                 .andExpect(jsonPath("$[0].id").value(patient.getId()))
-                .andExpect(jsonPath("$[0].nextSession").value("2099-02-01T10:15"));
+                .andExpect(jsonPath("$[0].nextSession").value("2099-01-01T10:15"));
+        var earlier = mvc.perform(post("/api/appointments").header("X-User-Id", patient.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"startsAt\":\"2098-12-01T09:00:00\",\"type\":\"DIGITAL\"}"))
+                .andExpect(status().isCreated()).andReturn();
+        var earlierId = new com.fasterxml.jackson.databind.ObjectMapper()
+                .readTree(earlier.getResponse().getContentAsString()).get("id").asLong();
+        mvc.perform(get("/api/therapist/patients").header("X-User-Id", therapist.getId()))
+                .andExpect(jsonPath("$[0].nextSession").value("2098-12-01T09:00"));
+        mvc.perform(put("/api/appointments/" + earlierId).header("X-User-Id", patient.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"startsAt\":\"2099-03-01T09:00:00\",\"type\":\"DIGITAL\"}"))
+                .andExpect(status().isOk());
+        mvc.perform(get("/api/therapist/patients").header("X-User-Id", therapist.getId()))
+                .andExpect(jsonPath("$[0].nextSession").value("2099-01-01T10:15"));
         mvc.perform(get("/api/therapist/patients").header("X-User-Id", other.getId()))
                 .andExpect(content().json("[]"));
     }

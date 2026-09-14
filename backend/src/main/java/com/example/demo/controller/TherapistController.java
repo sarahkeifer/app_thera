@@ -42,15 +42,15 @@ public class TherapistController {
                             .findFirstByUserOrderByCreatedAtDesc(patient)
                             .orElse(null);
 
-                    var latestAppointment = appointmentRepository
-                            .findFirstByUserIdAndStartsAtGreaterThanEqualOrderByIdDesc(patient.getId(), now)
+                    var nextAppointment = appointmentRepository
+                            .findFirstByUserIdAndStartsAtGreaterThanEqualOrderByStartsAtAsc(patient.getId(), now)
                             .orElse(null);
                     return new TherapistPatientDto(
                             patient.getId(),
                             patient.getFirstName() + " " + patient.getLastName(),
                             lastMood != null ? lastMood.getMood() : null,
                             lastMood != null ? lastMood.getCreatedAt().toString() : null,
-                            latestAppointment != null ? latestAppointment.getStartsAt().toString() : null
+                            nextAppointment != null ? nextAppointment.getStartsAt().toString() : null
                     );
                 })
                 .toList();

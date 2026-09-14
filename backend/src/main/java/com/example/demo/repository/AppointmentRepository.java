@@ -8,5 +8,5 @@ import java.time.LocalDateTime;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
     List<Appointment> findByUserIdOrderByStartsAtAsc(Long userId);
-    Optional<Appointment> findFirstByUserIdAndStartsAtGreaterThanEqualOrderByIdDesc(Long userId, LocalDateTime now);
+    Optional<Appointment> findFirstByUserIdAndStartsAtGreaterThanEqualOrderByStartsAtAsc(Long userId, LocalDateTime now);
 }
