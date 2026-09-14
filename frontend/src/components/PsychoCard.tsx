@@ -1,6 +1,6 @@
 import meditationImage from "../assets/meditation.jpg";
 import herzImage from "../assets/herz.jpg";
-import {KolCard, KolHeading} from "@public-ui/react-v19";
+import {KolHeading} from "@public-ui/react-v19";
 
 type InfoBox = {
     title: string;
