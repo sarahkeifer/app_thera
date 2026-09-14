@@ -18,6 +18,14 @@ import java.time.LocalDateTime;
 public class TherapistController {
     private final UserRepository userRepository;
     private final MoodEntryRepository moodEntryRepository;
+    private final AssignedTaskRepository assignedTaskRepository;
+
+    public TherapistController(UserRepository userRepository,
+                               MoodEntryRepository moodEntryRepository,
+                               AssignedTaskRepository assignedTaskRepository) {
+        this.userRepository = userRepository;
+        this.moodEntryRepository = moodEntryRepository;
+        this.assignedTaskRepository = assignedTaskRepository;
     private final AppointmentRepository appointmentRepository;
 
     public TherapistController(UserRepository userRepository,
@@ -52,6 +60,11 @@ public class TherapistController {
                             .findFirstByUserOrderByCreatedAtDesc(patient)
                             .orElse(null);
 
+                    long activeTasks = assignedTaskRepository
+                            .countByPatientAndStatus(patient, TaskStatus.OPEN);
+                    long completedTasks = assignedTaskRepository
+                            .countByPatientAndStatus(patient, TaskStatus.COMPLETED);
+
                     var nextAppointment = appointmentRepository
                             .findFirstByUserIdAndStartsAtGreaterThanEqualOrderByStartsAtAsc(patient.getId(), now)
                             .orElse(null);
@@ -66,6 +79,8 @@ public class TherapistController {
                             patient.getEmail(),
                             lastMood != null ? lastMood.getMood() : null,
                             lastMood != null ? lastMood.getCreatedAt().toString() : null,
+                            activeTasks,
+                            completedTasks
                             nextAppointment != null ? nextAppointment.getStartsAt().toString() : null
                             activeTasks,
                             completedTasks
@@ -80,6 +95,8 @@ public class TherapistController {
             String email,
             Integer lastMood,
             String lastMoodCreatedAt,
+            long activeTasks,
+            long completedTasks
             String nextSession
             long activeTasks,
             long completedTasks

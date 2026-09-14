@@ -1,3 +1,6 @@
+import { useEffect, useState } from "react";
+import { KolButton, KolCard, KolHeading, KolIcon, KolInputDate, KolInputText } from "@public-ui/react-v19";
+import { getMoodByValue } from "../../data/moods";
 import {useEffect, useState} from "react";
 import {KolAlert, KolButton, KolCard, KolHeading} from "@public-ui/react-v19";
 import { useEffect, useState } from "react";
@@ -25,6 +28,30 @@ type TaskTemplate = {
 
 export default function PatientOverView() {
     const [patients, setPatients] = useState<PatientOverviewItem[]>([]);
+    const [tasks, setTasks] = useState<TaskTemplate[]>([]);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [assigningPatient, setAssigningPatient] = useState<PatientOverviewItem | null>(null);
+
+    const loadPatients = () => {
+        fetch("http://localhost:8080/api/therapist/patients", {
+            headers: {
+                "X-User-Id": localStorage.getItem("userId") || "",
+            },
+        })
+            .then((res) => res.json())
+            .then((data) => setPatients(data));
+    };
+
+    useEffect(() => {
+        loadPatients();
+
+        fetch("http://localhost:8080/api/therapist/tasks", {
+            headers: {
+                "X-User-Id": localStorage.getItem("userId") || "",
+            },
+        })
+            .then((res) => res.json())
+            .then((data) => setTasks(data));
     const [loadError, setLoadError] = useState(false);
 
     useEffect(() => {
@@ -109,6 +136,7 @@ export default function PatientOverView() {
                 />
             </div>
 
+            <KolCard _label="" className="history">
             {loadError && <KolAlert _type="error" _label="Aktualisierung fehlgeschlagen">
                 Die Patientenübersicht konnte nicht aktualisiert werden. Angezeigte Termine sind möglicherweise veraltet. Die Aktualisierung wird automatisch erneut versucht.
             </KolAlert>}

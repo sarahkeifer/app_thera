@@ -109,6 +109,12 @@ export const CustomTheme = (
                 width: 140px;
                 min-height: 48px;
             }
+
+            /* Notiz-Typ-Buttons (Textnotiz / Audio) in NotesView */
+            :host(.note-type-btn) button {
+                width: 100%;
+                min-height: 64px;
+            }
             :host(.calendar-date) button {
                 background: white;
                 color: #334155;
