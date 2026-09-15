@@ -9,30 +9,28 @@ import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.AppointmentRepository;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/therapist")
 @CrossOrigin(origins = "http://localhost:5173")
 public class TherapistController {
+
     private final UserRepository userRepository;
     private final MoodEntryRepository moodEntryRepository;
     private final AssignedTaskRepository assignedTaskRepository;
+    private final AppointmentRepository appointmentRepository;
 
-    public TherapistController(UserRepository userRepository,
-                               MoodEntryRepository moodEntryRepository,
-                               AssignedTaskRepository assignedTaskRepository) {
+    public TherapistController(
+            UserRepository userRepository,
+            MoodEntryRepository moodEntryRepository,
+            AssignedTaskRepository assignedTaskRepository,
+            AppointmentRepository appointmentRepository
+    ) {
         this.userRepository = userRepository;
         this.moodEntryRepository = moodEntryRepository;
         this.assignedTaskRepository = assignedTaskRepository;
-    private final AppointmentRepository appointmentRepository;
-
-    public TherapistController(UserRepository userRepository,
-                               MoodEntryRepository moodEntryRepository,
-                               AppointmentRepository appointmentRepository) {
-        this.userRepository = userRepository;
-        this.moodEntryRepository = moodEntryRepository;
         this.appointmentRepository = appointmentRepository;
     }
 
@@ -46,29 +44,46 @@ public class TherapistController {
         List<User> patients = userRepository.findByTherapistId(therapist.getId());
 
         var now = LocalDateTime.now();
+
         return patients.stream()
                 .map(patient -> {
+
                     MoodEntry lastMood = moodEntryRepository
                             .findFirstByUserOrderByCreatedAtDesc(patient)
                             .orElse(null);
 
                     long activeTasks = assignedTaskRepository
-                            .countByPatientAndStatus(patient, TaskStatus.OPEN);
+                            .countByPatientAndStatus(
+                                    patient,
+                                    TaskStatus.OPEN
+                            );
+
                     long completedTasks = assignedTaskRepository
-                            .countByPatientAndStatus(patient, TaskStatus.COMPLETED);
+                            .countByPatientAndStatus(
+                                    patient,
+                                    TaskStatus.COMPLETED
+                            );
 
                     var nextAppointment = appointmentRepository
-                            .findFirstByUserIdAndStartsAtGreaterThanEqualOrderByStartsAtAsc(patient.getId(), now)
+                            .findFirstByUserIdAndStartsAtGreaterThanEqualOrderByStartsAtAsc(
+                                    patient.getId(),
+                                    now
+                            )
                             .orElse(null);
+
                     return new TherapistPatientDto(
                             patient.getId(),
                             patient.getFirstName() + " " + patient.getLastName(),
                             patient.getEmail(),
                             lastMood != null ? lastMood.getMood() : null,
-                            lastMood != null ? lastMood.getCreatedAt().toString() : null,
+                            lastMood != null
+                                    ? lastMood.getCreatedAt().toString()
+                                    : null,
                             activeTasks,
-                            completedTasks
-                            nextAppointment != null ? nextAppointment.getStartsAt().toString() : null
+                            completedTasks,
+                            nextAppointment != null
+                                    ? nextAppointment.getStartsAt().toString()
+                                    : null
                     );
                 })
                 .toList();
@@ -81,7 +96,7 @@ public class TherapistController {
             Integer lastMood,
             String lastMoodCreatedAt,
             long activeTasks,
-            long completedTasks
+            long completedTasks,
             String nextSession
     ) {
     }
