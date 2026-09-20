@@ -7,6 +7,8 @@ import com.example.demo.repository.AssignedTaskRepository;
 import com.example.demo.repository.MoodEntryRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.AppointmentRepository;
+import com.example.demo.service.ActivityService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -21,17 +23,20 @@ public class TherapistController {
     private final MoodEntryRepository moodEntryRepository;
     private final AssignedTaskRepository assignedTaskRepository;
     private final AppointmentRepository appointmentRepository;
+    private final ActivityService activityService;
 
     public TherapistController(
             UserRepository userRepository,
             MoodEntryRepository moodEntryRepository,
             AssignedTaskRepository assignedTaskRepository,
-            AppointmentRepository appointmentRepository
+            AppointmentRepository appointmentRepository,
+            ActivityService activityService
     ) {
         this.userRepository = userRepository;
         this.moodEntryRepository = moodEntryRepository;
         this.assignedTaskRepository = assignedTaskRepository;
         this.appointmentRepository = appointmentRepository;
+        this.activityService = activityService;
     }
 
     @GetMapping("/patients")
@@ -87,6 +92,31 @@ public class TherapistController {
                     );
                 })
                 .toList();
+    }
+
+    /**
+     * Aktivitäts-Heatmap eines einzelnen, vom Therapeuten betreuten
+     * Patienten (siehe TaskHeatmap.tsx / PatientOverView: "Aktivität
+     * anzeigen"-Button je Zeile). Nutzt dieselbe Zähllogik wie die
+     * Patienten-eigene Heatmap (ActivityService), damit beide Ansichten
+     * exakt dieselben Zahlen liefern.
+     */
+    @GetMapping("/patients/{patientId}/activity")
+    public ResponseEntity<List<ActivityService.DayActivityDto>> getPatientActivity(
+            @PathVariable Long patientId,
+            @RequestHeader("X-User-Id") Long therapistId
+    ) {
+        User patient = userRepository.findById(patientId)
+                .orElseThrow();
+
+        // Zugriffsschutz: ein Therapeut darf nur die Heatmap seiner eigenen
+        // Patient:innen sehen, nicht die beliebiger anderer User-IDs.
+        if (patient.getTherapist() == null
+                || !patient.getTherapist().getId().equals(therapistId)) {
+            return ResponseEntity.status(403).build();
+        }
+
+        return ResponseEntity.ok(activityService.getActivity(patient));
     }
 
     public record TherapistPatientDto(

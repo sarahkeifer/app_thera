@@ -66,6 +66,7 @@ import {
     KolInputText,
 } from "@public-ui/react-v19";
 import { getMoodByValue } from "../../data/moods";
+import TaskHeatmap from "../../components/TaskHeatmap";
 
 type PatientOverviewItem = {
     id: number;
@@ -92,6 +93,8 @@ export default function PatientOverView() {
     const [tasks, setTasks] = useState<TaskTemplate[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [assigningPatient, setAssigningPatient] =
+        useState<PatientOverviewItem | null>(null);
+    const [viewingActivityFor, setViewingActivityFor] =
         useState<PatientOverviewItem | null>(null);
     const [loadError, setLoadError] = useState(false);
 
@@ -271,18 +274,20 @@ export default function PatientOverView() {
                 _label=""
                 className="history"
             >
-                <table className="patient-table">
-                    <thead>
+                <div className="patient-table-card">
+                    <table className="patient-table">
+                        <thead>
                         <tr>
                             <th>Patient</th>
                             <th>Stimmung</th>
                             <th>Aufgaben</th>
                             <th>Nächster Termin</th>
+                            <th>Aktivität</th>
                             <th>Aktionen</th>
                         </tr>
-                    </thead>
+                        </thead>
 
-                    <tbody>
+                        <tbody>
                         {filteredPatients.map((patient) => {
                             const mood = getMoodByValue(
                                 patient.lastMood
@@ -369,6 +374,22 @@ export default function PatientOverView() {
                                     </td>
 
                                     <td>
+                                        <div className="patient-activity-button">
+                                            <KolButton
+                                                _label="Aktivität anzeigen"
+                                                _variant="secondary"
+                                                _icons="icofont icofont-fire-burn"
+                                                _on={{
+                                                    onClick: () =>
+                                                        setViewingActivityFor(
+                                                            patient
+                                                        ),
+                                                }}
+                                            />
+                                        </div>
+                                    </td>
+
+                                    <td>
                                         <div className="patient-assign-button">
                                             <KolButton
                                                 _label="Aufgabe zuweisen"
@@ -385,8 +406,9 @@ export default function PatientOverView() {
                                 </tr>
                             );
                         })}
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
 
                 {filteredPatients.length === 0 && (
                     <p className="task-pool-empty">
@@ -405,15 +427,22 @@ export default function PatientOverView() {
                     }}
                 />
             )}
+
+            {viewingActivityFor && (
+                <PatientActivityModal
+                    patient={viewingActivityFor}
+                    onClose={() => setViewingActivityFor(null)}
+                />
+            )}
         </div>
     );
 }
 
 function AssignTaskToPatientModal({
-    patient,
-    tasks,
-    onClose,
-}: {
+                                      patient,
+                                      tasks,
+                                      onClose,
+                                  }: {
     patient: PatientOverviewItem;
     tasks: TaskTemplate[];
     onClose: () => void;
@@ -437,154 +466,193 @@ function AssignTaskToPatientModal({
         try {
             const response = await fetch(
                 `http://localhost:8080/api/therapist/tasks/${selectedTaskId}/assign`,
-{
-    method: "POST",
-        headers: {
-    "Content-Type": "application/json",
-        "X-User-Id":
-    localStorage.getItem("userId") || "",
-},
-    body: JSON.stringify({
-        patientIds: [patient.id],
-        dueDate: dueDate || null,
-    }),
-}
-);
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-User-Id":
+                            localStorage.getItem("userId") || "",
+                    },
+                    body: JSON.stringify({
+                        patientIds: [patient.id],
+                        dueDate: dueDate || null,
+                    }),
+                }
+            );
 
-if (!response.ok) {
-    throw new Error(
-        "Aufgabe konnte nicht zugewiesen werden."
-    );
-}
+            if (!response.ok) {
+                throw new Error(
+                    "Aufgabe konnte nicht zugewiesen werden."
+                );
+            }
 
-setAssigned(true);
-} catch (error) {
-    console.error(
-        "Fehler beim Zuweisen der Aufgabe:",
-        error
-    );
-    setAssignError(true);
-} finally {
-    setAssigning(false);
-}
-};
+            setAssigned(true);
+        } catch (error) {
+            console.error(
+                "Fehler beim Zuweisen der Aufgabe:",
+                error
+            );
+            setAssignError(true);
+        } finally {
+            setAssigning(false);
+        }
+    };
 
-return (
-    <div className="home-mood-overlay">
-        <div className="task-modal">
-            <KolCard
-                _label=""
-                className="dialog"
-            >
-                <KolHeading
-                    _level={2}
-                    _label={`Aufgabe zuweisen an ${patient.name}`}
-                />
-
-                {assigned ? (
-                    <p className="task-assign-success">
-                        Aufgabe wurde zugewiesen.
-                    </p>
-                ) : (
-                    <>
-                        {assignError && (
-                            <KolAlert
-                                _type="error"
-                                _label="Zuweisung fehlgeschlagen"
-                            >
-                                Die Aufgabe konnte nicht
-                                zugewiesen werden. Bitte
-                                versuchen Sie es erneut.
-                            </KolAlert>
-                        )}
-
-                        <div className="task-form-field">
-                            <label className="task-form-label">
-                                Aufgabe auswählen
-                            </label>
-
-                            <div className="task-assign-patient-list">
-                                {tasks.length === 0 ? (
-                                    <p>
-                                        Keine Aufgaben im Pool
-                                        vorhanden.
-                                    </p>
-                                ) : (
-                                    tasks.map((task) => (
-                                        <KolButton
-                                            key={task.id}
-                                            _label={task.title}
-                                            className="task-assign-patient-btn"
-                                            _variant={
-                                                selectedTaskId ===
-                                                task.id
-                                                    ? "primary"
-                                                    : "secondary"
-                                            }
-                                            _on={{
-                                                onClick: () =>
-                                                    setSelectedTaskId(
-                                                        task.id
-                                                    ),
-                                            }}
-                                        />
-                                    ))
-                                )}
-                            </div>
-                        </div>
-
-                        <div className="task-form-field">
-                            <label className="task-form-label">
-                                Fälligkeitsdatum (optional)
-                            </label>
-
-                            <KolInputDate
-                                _label="Fälligkeitsdatum"
-                                _hideLabel
-                                _type="date"
-                                // _value={dueDate}
-                                _on={{
-                                    onInput: (_event, value) =>
-                                        setDueDate(
-                                            String(value)
-                                        ),
-                                }}
-                            />
-                        </div>
-                    </>
-                )}
-
-                <div className="mood-dialog-actions">
-                    <KolButton
-                        _label={
-                            assigned
-                                ? "Schließen"
-                                : "Abbrechen"
-                        }
-                        _variant="secondary"
-                        _on={{
-                            onClick: onClose,
-                        }}
+    return (
+        <div className="home-mood-overlay">
+            <div className="task-modal">
+                <KolCard
+                    _label=""
+                    className="dialog"
+                >
+                    <KolHeading
+                        _level={2}
+                        _label={`Aufgabe zuweisen an ${patient.name}`}
                     />
 
-                    {!assigned && (
+                    {assigned ? (
+                        <p className="task-assign-success">
+                            Aufgabe wurde zugewiesen.
+                        </p>
+                    ) : (
+                        <>
+                            {assignError && (
+                                <KolAlert
+                                    _type="error"
+                                    _label="Zuweisung fehlgeschlagen"
+                                >
+                                    Die Aufgabe konnte nicht
+                                    zugewiesen werden. Bitte
+                                    versuchen Sie es erneut.
+                                </KolAlert>
+                            )}
+
+                            <div className="task-form-field">
+                                <label className="task-form-label">
+                                    Aufgabe auswählen
+                                </label>
+
+                                <div className="task-assign-patient-list">
+                                    {tasks.length === 0 ? (
+                                        <p>
+                                            Keine Aufgaben im Pool
+                                            vorhanden.
+                                        </p>
+                                    ) : (
+                                        tasks.map((task) => (
+                                            <KolButton
+                                                key={task.id}
+                                                _label={task.title}
+                                                className="task-assign-patient-btn"
+                                                _variant={
+                                                    selectedTaskId ===
+                                                    task.id
+                                                        ? "primary"
+                                                        : "secondary"
+                                                }
+                                                _on={{
+                                                    onClick: () =>
+                                                        setSelectedTaskId(
+                                                            task.id
+                                                        ),
+                                                }}
+                                            />
+                                        ))
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="task-form-field">
+                                <label className="task-form-label">
+                                    Fälligkeitsdatum (optional)
+                                </label>
+
+                                <KolInputDate
+                                    _label="Fälligkeitsdatum"
+                                    _hideLabel
+                                    _type="date"
+                                    // _value={dueDate}
+                                    _on={{
+                                        onInput: (_event, value) =>
+                                            setDueDate(
+                                                String(value)
+                                            ),
+                                    }}
+                                />
+                            </div>
+                        </>
+                    )}
+
+                    <div className="mood-dialog-actions">
                         <KolButton
                             _label={
-                                assigning
-                                    ? "Zuweisen..."
-                                    : "Zuweisen"
+                                assigned
+                                    ? "Schließen"
+                                    : "Abbrechen"
                             }
-                            _disabled={
-                                !selectedTaskId || assigning
-                            }
+                            _variant="secondary"
                             _on={{
-                                onClick: handleAssign,
+                                onClick: onClose,
                             }}
                         />
-                    )}
-                </div>
-            </KolCard>
+
+                        {!assigned && (
+                            <KolButton
+                                _label={
+                                    assigning
+                                        ? "Zuweisen..."
+                                        : "Zuweisen"
+                                }
+                                _disabled={
+                                    !selectedTaskId || assigning
+                                }
+                                _on={{
+                                    onClick: handleAssign,
+                                }}
+                            />
+                        )}
+                    </div>
+                </KolCard>
+            </div>
         </div>
-    </div>
-);
+    );
+}
+
+/**
+ * PatientActivityModal
+ * ----------------------------------------------------------------------------
+ * Overlay, das die Aktivitäts-Heatmap (TaskHeatmap) eines einzelnen
+ * Patienten zeigt - dieselbe Komponente wie auf der Patienten-Startseite,
+ * hier über die `patientId`-Prop auf die Daten dieses einen Patienten
+ * umgeschaltet (siehe TaskHeatmap.tsx). Nutzt dasselbe
+ * `.home-mood-overlay`-Overlay-Muster wie AssignTaskToPatientModal, damit
+ * beide Dialoge auf der Seite einheitlich aussehen.
+ */
+function PatientActivityModal({
+                                  patient,
+                                  onClose,
+                              }: {
+    patient: PatientOverviewItem;
+    onClose: () => void;
+}) {
+    return (
+        <div className="home-mood-overlay">
+            <div className="task-modal">
+                <KolCard _label="" className="dialog">
+                    <TaskHeatmap
+                        patientId={patient.id}
+                        title={`Aktivität von ${patient.name}`}
+                    />
+
+                    <div className="mood-dialog-actions">
+                        <KolButton
+                            _label="Schließen"
+                            _variant="secondary"
+                            _on={{ onClick: onClose }}
+                        />
+                    </div>
+                </KolCard>
+            </div>
+        </div>
+    );
 }

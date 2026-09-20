@@ -13,5 +13,7 @@ public interface AssignedTaskRepository extends JpaRepository<AssignedTask, Long
 
     long countByPatientAndStatus(User patient, TaskStatus status);
 
+    List<AssignedTask> findByPatientAndStatus(User patient, TaskStatus status);
+
     List<AssignedTask> findByTaskTemplate(TaskTemplate taskTemplate);
 }

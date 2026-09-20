@@ -29,6 +29,14 @@ public class AssignedTask {
 
     private LocalDateTime assignedAt = LocalDateTime.now();
 
+    /**
+     * Zeitpunkt, zu dem der Status zuletzt auf COMPLETED gesetzt wurde.
+     * Wird beim Statuswechsel in PatientTaskController gepflegt und ist die
+     * Datengrundlage fuer die Task-Heatmap (HomeView): dort zaehlt pro Tag,
+     * wie viele Aufgaben an genau diesem Tag erledigt wurden.
+     */
+    private LocalDateTime completedAt;
+
     public Long getId() {
         return id;
     }
@@ -83,5 +91,13 @@ public class AssignedTask {
 
     public void setAssignedAt(LocalDateTime assignedAt) {
         this.assignedAt = assignedAt;
+    }
+
+    public LocalDateTime getCompletedAt() {
+        return completedAt;
+    }
+
+    public void setCompletedAt(LocalDateTime completedAt) {
+        this.completedAt = completedAt;
     }
 }

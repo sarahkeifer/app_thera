@@ -9,6 +9,7 @@ import com.example.demo.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -49,6 +50,18 @@ public class PatientTaskController {
         }
 
         assignedTask.setStatus(request.status());
+
+        // completedAt ist die Datengrundlage der Task-Heatmap auf der
+        // Startseite: nur beim (erneuten) Abschluss setzen, beim
+        // Zuruecksetzen auf OPEN wieder leeren, damit ein Tag nicht faelsch-
+        // licherweise als "erledigt" gezaehlt wird, wenn die Aufgabe danach
+        // wieder geoeffnet wurde.
+        if (request.status() == TaskStatus.COMPLETED) {
+            assignedTask.setCompletedAt(LocalDateTime.now());
+        } else {
+            assignedTask.setCompletedAt(null);
+        }
+
         assignedTaskRepository.save(assignedTask);
 
         return ResponseEntity.ok(PatientAssignedTaskDto.from(assignedTask));

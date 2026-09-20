@@ -9,4 +9,6 @@ public interface TaskTemplateRepository extends JpaRepository<TaskTemplate, Long
     List<TaskTemplate> findAllByOrderByCreatedAtDesc();
 
     List<TaskTemplate> findByDeletedFalseOrderByCreatedAtDesc();
+
+    java.util.Optional<TaskTemplate> findByTitle(String title);
 }

@@ -30,6 +30,9 @@
  * - Rollentrennung erfolgt rein über bedingtes Rendering der Routen-Blöcke,
  *   nicht über verschachtelte Router – hält die Struktur flach und
  *   nachvollziehbar.
+ * - `PanicButton` wird ausschließlich für die Rolle PATIENT gerendert, und
+ *   zwar außerhalb der `<Routes>` – damit ist er auf jeder Patienten-Unter-
+ *   seite erreichbar, unabhängig vom aktuellen Routen-Ziel.
  *
  * Responsive Design
  * ----------------------------------------------------------------------------
@@ -58,6 +61,7 @@ import TaskPoolView from "./pages/therapist/TaskPoolView.tsx";
 import ContentPoolView from "./pages/therapist/ContentPoolView.tsx";
 import PatientNav from "./pages/patient/PatientNav.tsx";
 import TherapistNav from "./pages/therapist/TherapistNav.tsx";
+import PanicButton from "././components/PanicButton.tsx";
 
 function App() {
     const [loggedInRole, setLoggedInRole] = useState(() => localStorage.getItem("role") || "");
@@ -98,6 +102,7 @@ function App() {
             </Routes>
             {loggedInRole === "PATIENT" && <PatientNav/>}
             {loggedInRole === "THERAPIST" && <TherapistNav/>}
+            {loggedInRole === "PATIENT" && <PanicButton/>}
 
 
         </>

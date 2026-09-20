@@ -53,6 +53,11 @@ const iconFontCss = `
     .icofont-mic:before { content: "\\ef95"; }
     .icofont-clock-time:before { content: "\\eedc"; }
     .icofont-ui-record:before { content: "\\ec7d"; }
+
+    /* Panikbutton / Atemübung */
+    .icofont-life-ring:before { content: "\\ef6a"; }
+    .icofont-lungs:before { content: "\\ef83"; }
+    .icofont-telephone:before { content: "\\f008"; }
 `;
 
 export const CustomTheme = (

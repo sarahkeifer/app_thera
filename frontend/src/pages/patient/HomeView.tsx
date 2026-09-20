@@ -30,7 +30,10 @@
  * ----------------------------------------------------------------------------
  * Die Widgets sind als vertikal gestapelte `KolCard`-Blöcke umgesetzt, die
  * sich auf allen Bildschirmbreiten auf 100% der verfügbaren Container-
- * breite strecken (kein festes Grid nötig).
+ * breite strecken (kein festes Grid nötig). Der äußere `.home-page`-Wrapper
+ * bekommt `padding-bottom`, damit die fixe untere Navigation
+ * (`.footer-nav`) den unteren Rand der Seite (zuletzt die Heatmap) nicht
+ * verdeckt und bis zum Ende gescrollt werden kann.
  *
  * Verwendete KoliBri-Komponenten
  * ----------------------------------------------------------------------------
@@ -40,6 +43,7 @@
 
 import HomeMoodCard from '../../components/HomeMoodCard';
 import HomeTasksCard from '../../components/HomeTasksCard';
+import TaskHeatmap from '../../components/TaskHeatmap';
 import UpcomingAppointmentsCard from '../../components/UpcomingAppointmentsCard';
 import  {KolHeading}  from "@public-ui/react-v19";
 export default function HomeView() {
@@ -54,7 +58,7 @@ export default function HomeView() {
     };
 
     return (
-        <>
+        <div className="home-page">
             <div className="home-header">
 
                 <KolHeading
@@ -76,7 +80,12 @@ export default function HomeView() {
                 Komponente, lädt ihre Termine selbst und bringt ihre eigenen
                 Bearbeiten-/Löschen-Dialoge mit. */}
             <UpcomingAppointmentsCard />
-        </>
+
+            {/* GitHub-artige Aktivitäts-Heatmap: Aufgaben (grün) und
+                Stimmungs-Einträge (orange) im selben Kästchen, siehe
+                TaskHeatmap.tsx. */}
+            <TaskHeatmap />
+        </div>
     );
 
 }

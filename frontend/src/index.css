@@ -509,6 +509,11 @@ code {
 
 .patient-overview {
     padding: 32px;
+    /* padding-bottom groesser als die uebrigen Seiten (siehe .task-page /
+       .notes-page / .task-pool-page), da die fixe .footer-nav sonst den
+       unteren Rand der Tabelle/Seite verdeckt und man nicht bis zum
+       tatsaechlichen Seitenende scrollen kann. */
+    padding-bottom: 120px;
     width: 100%;
     box-sizing: border-box;
 }
@@ -592,6 +597,14 @@ code {
 }
 
 .patient-assign-button kol-button {
+    --button-width: 180px;
+}
+
+.patient-activity-button {
+    width: 180px;
+}
+
+.patient-activity-button kol-button {
     --button-width: 180px;
 }
 /* ─── Therapist: Task Pool ─────────────────────────────────────────────── */

@@ -515,3 +515,218 @@
         transform: translateY(0);
     }
 }
+/* ─── Panikbutton ────────────────────────────────────────────────────────
+   Bewusst warm/auffällig statt im App-Lila gehalten, damit er sich im
+   Ernstfall klar von allen anderen Buttons abhebt, aber nicht wie ein
+   aggressiver Fehler-/Warnzustand wirkt (kein reines Alarm-Rot). */
+
+.panic-btn {
+    position: fixed;
+    right: 16px;
+    bottom: 92px;
+    z-index: 90;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: none;
+    background: #f97316;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    box-shadow: 0 8px 20px rgba(249, 115, 22, 0.4);
+    cursor: pointer;
+    transition:
+        transform 0.15s ease,
+        background 0.2s ease;
+}
+
+.panic-btn:hover {
+    background: #ea580c;
+}
+
+.panic-btn:active {
+    transform: scale(0.94);
+}
+
+.panic-btn kol-icon {
+    font-size: 26px;
+}
+
+@media (max-width: 480px) {
+    .panic-btn {
+        right: 12px;
+        bottom: 84px;
+        width: 52px;
+        height: 52px;
+        font-size: 24px;
+    }
+
+    .panic-btn kol-icon {
+        font-size: 24px;
+    }
+}
+
+/* ─── Atemübung (BreathingExercise) ─────────────────────────────────────
+   Eigenes, vollflächiges Overlay statt der bestehenden Dialog-Karten-
+   Optik - die Übung soll den ganzen Bildschirm einnehmen und beruhigend
+   wirken. clamp() sorgt dafür, dass Kreis und Schrift auf jedem
+   Bildschirm (kleines Handy bis Tablet) proportional und lesbar bleiben,
+   ohne eigene Media-Queries für jede Größe pflegen zu müssen. */
+
+.breathing-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: linear-gradient(180deg, #f3e8ff 0%, #ede9fe 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: clamp(24px, 6vh, 56px) 20px;
+    box-sizing: border-box;
+    text-align: center;
+    /* Sicherheitsnetz für sehr flache Viewports (z.B. Handy im Querformat,
+       kleines Popup-Fenster): ohne overflow-y würde Inhalt, der höher als
+       der Bildschirm ist, einfach abgeschnitten und wäre nicht erreichbar -
+       mit overflow-y bleibt er zumindest scrollbar. */
+    overflow-y: auto;
+}
+
+.breathing-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: #6b21a8;
+}
+
+.breathing-header kol-icon {
+    font-size: clamp(28px, 5vw, 40px);
+}
+
+.breathing-header p {
+    font-size: clamp(16px, 3vw, 20px);
+    margin: 0;
+}
+
+.breathing-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(8px, 2vh, 16px);
+    flex: 1;
+}
+
+.breathing-circle {
+    width: clamp(140px, 40vw, 240px);
+    height: clamp(140px, 40vw, 240px);
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #d8b4fe, #a855f7 70%);
+    box-shadow: 0 0 60px rgba(168, 85, 247, 0.45);
+    animation: breathing-pulse 16s ease-in-out infinite;
+    /* Der Kreis wächst per transform:scale(1.5) auf das 1,5-fache seiner
+       Größe (siehe @keyframes breathing-pulse) - das beeinflusst NICHT den
+       Platzbedarf im Layout, nur die optische Darstellung. Ohne diesen
+       Rand würde der vergrößerte Kreis den Phasen-Text darüber und die
+       Hilfe-Box darunter optisch überdecken. margin statt padding, weil
+       padding mitskalieren und das Problem nicht lösen würde. Rechnung:
+       bei max. Kreisgröße 240px wächst er auf 360px, also 60px pro Seite
+       - der Rand deckt diesen Fall mit etwas Puffer ab. */
+    margin: clamp(40px, 8vh, 70px) 0;
+}
+
+@keyframes breathing-pulse {
+    0% {
+        transform: scale(1);
+    }
+    25% {
+        transform: scale(1.5);
+    }
+    50% {
+        transform: scale(1.5);
+    }
+    75% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.breathing-phase {
+    font-size: clamp(22px, 5vw, 32px);
+    font-weight: 600;
+    color: #4c1d95;
+    margin: 0;
+    min-height: 1.2em;
+}
+
+.breathing-help {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    max-width: 480px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 20px;
+    padding: 14px 18px;
+    color: #4c1d95;
+    text-align: left;
+}
+
+.breathing-help kol-icon {
+    font-size: 20px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.breathing-help p {
+    margin: 0;
+    font-size: clamp(13px, 2.6vw, 15px);
+    line-height: 1.5;
+}
+
+.breathing-close {
+    margin-top: clamp(16px, 4vh, 28px);
+}
+
+.breathing-close kol-button {
+    --button-width: 200px;
+}
+
+@media (max-width: 380px) {
+    .breathing-help {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+}
+
+.home-page {
+    padding-bottom: 120px;
+}
+
+.home-header {
+    padding: 32px 20px 20px;
+}
+
+/* ─── Aktivitäts-Heatmap (TaskHeatmap) ─── */
+.home-heatmap-error { color: #b91c1c; }
+.home-heatmap-scroll { overflow-x: auto; padding-bottom: 4px; }
+.home-heatmap-grid { display: inline-flex; flex-direction: column; gap: 4px; min-width: min-content; }
+.home-heatmap-months { display: flex; gap: clamp(2px, 0.5vw, 3px); padding-left: 4px; }
+.home-heatmap-weekday-spacer { width: 28px; flex-shrink: 0; }
+.home-heatmap-month { width: clamp(11px, 1.6vw, 14px); font-size: 12px; color: #64748b; text-align: left; white-space: nowrap; }
+.home-heatmap-body { display: flex; gap: 6px; }
+.home-heatmap-weekdays { display: flex; flex-direction: column; gap: clamp(2px, 0.5vw, 3px); width: 22px; flex-shrink: 0; }
+.home-heatmap-weekdays span { height: clamp(11px, 1.6vw, 14px); font-size: 11px; line-height: clamp(11px, 1.6vw, 14px); color: #94a3b8; }
+.home-heatmap-weeks { display: flex; gap: clamp(2px, 0.5vw, 3px); }
+.home-heatmap-week { display: flex; flex-direction: column; gap: clamp(2px, 0.5vw, 3px); }
+.home-heatmap-cell { width: clamp(11px, 1.6vw, 14px); height: clamp(11px, 1.6vw, 14px); border-radius: 3px; outline: 1px solid rgba(27, 31, 35, 0.06); outline-offset: -1px; }
+.home-heatmap-legend { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px; font-size: 13px; color: #64748b; }
+.home-heatmap-legend-item { display: inline-flex; align-items: center; gap: 6px; }
+.home-heatmap-legend-swatch { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.home-heatmap-legend-task { background: #4cb96b; }
+.home-heatmap-legend-mood { background: #f59433; }
