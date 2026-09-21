@@ -51,7 +51,7 @@
  * KolCard, KolHeading.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import { KolCard, KolHeading } from "@public-ui/react-v19";
 
@@ -230,6 +230,7 @@ export default function TaskHeatmap({ patientId, title }: TaskHeatmapProps) {
     const [activity, setActivity] = useState<DayActivity[]>([]);
     const [loadError, setLoadError] = useState(false);
     const [loading, setLoading] = useState(true);
+    const scrollRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         // Ohne patientId: eigene Aktivität des eingeloggten Nutzers.
@@ -257,7 +258,22 @@ export default function TaskHeatmap({ patientId, title }: TaskHeatmapProps) {
             .finally(() => setLoading(false));
     }, [patientId]);
 
+    // Raster bleibt unverändert (12 Monate); nur die Scroll-Position wird so
+    // gesetzt, dass die Woche mit dem ersten Eintrag am linken Rand steht.
+    useEffect(() => {
+        const container = scrollRef.current;
+        const firstActive = container?.querySelector<HTMLElement>("[data-first-active]");
+
+        if (!container || !firstActive) return;
+
+        container.scrollLeft +=
+            firstActive.getBoundingClientRect().left - container.getBoundingClientRect().left;
+    }, [loading, loadError, activity]);
+
     const weeks = buildWeeks(activity);
+    const firstActiveWeek = weeks.findIndex((week) =>
+        week.some((cell) => cell.inRange && (cell.completedTasks > 0 || cell.moodEntries > 0))
+    );
     const months = monthLabels(weeks);
     const weekdayLabels = ["Mo", "", "Mi", "", "Fr", "", ""];
 
@@ -276,7 +292,7 @@ export default function TaskHeatmap({ patientId, title }: TaskHeatmapProps) {
                 </p>
             ) : (
                 <>
-                    <div className="home-heatmap-scroll">
+                    <div className="home-heatmap-scroll" ref={scrollRef}>
                         <div className="home-heatmap-grid">
                             <div className="home-heatmap-months">
                                 <div className="home-heatmap-weekday-spacer" />
@@ -296,7 +312,11 @@ export default function TaskHeatmap({ patientId, title }: TaskHeatmapProps) {
 
                                 <div className="home-heatmap-weeks">
                                     {weeks.map((week, weekIndex) => (
-                                        <div className="home-heatmap-week" key={weekIndex}>
+                                        <div
+                                            className="home-heatmap-week"
+                                            key={weekIndex}
+                                            data-first-active={weekIndex === firstActiveWeek ? "" : undefined}
+                                        >
                                             {week.map((cell) => (
                                                 <div
                                                     key={cell.date}
@@ -328,3 +348,4 @@ export default function TaskHeatmap({ patientId, title }: TaskHeatmapProps) {
         </KolCard>
     );
 }
+

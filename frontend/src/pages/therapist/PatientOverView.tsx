@@ -43,11 +43,19 @@
  *
  * Responsive Design
  * ----------------------------------------------------------------------------
- * Die Tabelle ist in `.patient-table-card` mit `overflow-x: auto`
- * gekapselt, sodass sie auf schmalen Bildschirmen horizontal scrollbar ist,
- * statt das Layout zu sprengen oder Spalten abzuschneiden. Das
- * umschließende `.patient-overview`-Padding reduziert sich auf kleinen
- * Displays, damit mehr nutzbare Breite für die Tabelle bleibt.
+ * Ab einer Viewport-Breite von 1100px (Layout-Maximalbreite von `#root`)
+ * wird die Tabelle rein per CSS in ein Karten-Raster umgebaut: Jede
+ * Tabellenzeile wird zu einer Patientenkarte (Name/E-Mail als Kopf, darunter
+ * Stimmung, Aufgaben und Termin als Label-Wert-Zeilen, unten die beiden
+ * Aktions-Buttons). Auf Tablets stehen die Karten in mehreren Spalten, auf
+ * Smartphones untereinander. Die Labels der Zellen kommen aus den
+ * `data-label`-Attributen der `<td>`-Elemente; die `role`-Attribute halten
+ * die Tabellensemantik für Screenreader aufrecht, obwohl die Elemente per
+ * `display: block/grid` dargestellt werden (Safari verwirft sie sonst).
+ * Oberhalb von 1100px bleibt das klassische Tabellenlayout erhalten, das in
+ * `.patient-table-card` weiterhin horizontal scrollbar ist. Das umschließende
+ * `.patient-overview`-Padding sowie die Dialoge (`.task-modal`) passen sich
+ * ebenfalls an kleine Displays an (siehe index.css, Abschnitt "Responsive").
  *
  * Verwendete KoliBri-Komponenten
  * ----------------------------------------------------------------------------
@@ -275,27 +283,27 @@ export default function PatientOverView() {
                 className="history"
             >
                 <div className="patient-table-card">
-                    <table className="patient-table">
-                        <thead>
-                        <tr>
-                            <th>Patient</th>
-                            <th>Stimmung</th>
-                            <th>Aufgaben</th>
-                            <th>Nächster Termin</th>
-                            <th>Aktivität</th>
-                            <th>Aktionen</th>
+                    <table className="patient-table" role="table">
+                        <thead role="rowgroup">
+                        <tr role="row">
+                            <th role="columnheader">Patient</th>
+                            <th role="columnheader">Stimmung</th>
+                            <th role="columnheader">Aufgaben</th>
+                            <th role="columnheader">Nächster Termin</th>
+                            <th role="columnheader">Aktivität</th>
+                            <th role="columnheader">Aktionen</th>
                         </tr>
                         </thead>
 
-                        <tbody>
+                        <tbody role="rowgroup">
                         {filteredPatients.map((patient) => {
                             const mood = getMoodByValue(
                                 patient.lastMood
                             );
 
                             return (
-                                <tr key={patient.id}>
-                                    <td>
+                                <tr key={patient.id} role="row">
+                                    <td role="cell">
                                         <div className="patient-name-cell">
                                             <span className="patient-name">
                                                 {patient.name}
@@ -307,7 +315,7 @@ export default function PatientOverView() {
                                         </div>
                                     </td>
 
-                                    <td>
+                                    <td role="cell" data-label="Stimmung">
                                         <div className="patient-mood">
                                             <span className="patient-mood-emoji">
                                                 {mood && (
@@ -329,7 +337,7 @@ export default function PatientOverView() {
                                         </div>
                                     </td>
 
-                                    <td>
+                                    <td role="cell" data-label="Aufgaben">
                                         <div className="patient-tasks">
                                             <span className="patient-active">
                                                 {patient.activeTasks}
@@ -347,7 +355,7 @@ export default function PatientOverView() {
                                         </div>
                                     </td>
 
-                                    <td>
+                                    <td role="cell" data-label="Nächster Termin">
                                         {patient.nextSession ? (
                                             <time
                                                 dateTime={
@@ -373,7 +381,7 @@ export default function PatientOverView() {
                                         )}
                                     </td>
 
-                                    <td>
+                                    <td role="cell">
                                         <div className="patient-activity-button">
                                             <KolButton
                                                 _label="Aktivität anzeigen"
@@ -389,7 +397,7 @@ export default function PatientOverView() {
                                         </div>
                                     </td>
 
-                                    <td>
+                                    <td role="cell">
                                         <div className="patient-assign-button">
                                             <KolButton
                                                 _label="Aufgabe zuweisen"

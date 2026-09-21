@@ -213,8 +213,9 @@ export default function TaskPoolView() {
                                     </div>
 
                                     <KolButton
-                                        _label="✕"
-                                        _hideLabel={false}
+                                        _label="Aufgabe löschen"
+                                        _hideLabel
+                                        _icons="icofont icofont-ui-delete"
                                         _variant="secondary"
                                         className="task-pool-delete-btn"
                                         _on={{ onClick: () => setDeletingTask(task) }}

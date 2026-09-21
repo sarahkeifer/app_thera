@@ -163,12 +163,8 @@ export const CustomTheme = (
                 border: 0;
             }
             :host(.calendar-arrow) button:hover { background: #f3e8ff; }
-            .calendar-arrow-left::before { content: '←'; }
-            .calendar-arrow-right::before { content: '→'; }
             .calendar-arrow-left, .calendar-arrow-right { font-size: 28px; line-height: 1; }
             :host(.calendar-icon-action) button { width: 48px; min-height: 48px; padding: 10px; }
-            .calendar-edit-icon::before { content: '✎'; }
-            .calendar-delete-icon::before { content: '×'; }
             .calendar-edit-icon, .calendar-delete-icon { font-size: 26px; line-height: 1; }
         `,
 

@@ -37,12 +37,16 @@
  *
  * Responsive Design
  * ----------------------------------------------------------------------------
- * `.notes-modal` und `.detail-dialog`-ähnliche Container begrenzen ihre
- * Breite responsiv; die Notiz-Liste (`.notes-list`) ist eine vertikal
- * fließende Liste, die auf jeder Displaygröße ohne horizontales Scrollen
- * funktioniert. Titel-/Aktionszeile pro Notiz (`.notes-item-top`) bricht
- * bei sehr schmalen Breiten um, damit die Bearbeiten-/Löschen-Buttons
- * nicht über den Titel hinausragen.
+ * `.notes-page` hat seitlichen Innenabstand (wie `.mood-page`), der auf
+ * Smartphones schrumpft, damit die Inhalte nicht am Displayrand kleben.
+ * `.notes-modal` und `.delete-dialog` begrenzen ihre Breite und Höhe auf den
+ * Viewport (Dialog scrollt intern, statt abgeschnitten zu werden). Die
+ * Buttons-Reihen (Notiztypen, Dialog-Aktionen, Ja/Nein) stapeln sich bei
+ * sehr schmalen Breiten. Die Notiz-Liste (`.notes-list`) ist eine vertikal
+ * fließende Liste; die Titel-/Aktionszeile pro Notiz (`.notes-item-top`)
+ * bricht um, sodass Bearbeiten-/Löschen-Buttons nie über den Titel
+ * hinausragen und lange Titel umgebrochen werden (siehe index.css,
+ * Abschnitt "Responsive: Patientenübersicht & Notizen").
  *
  * Verwendete KoliBri-Komponenten
  * ----------------------------------------------------------------------------
