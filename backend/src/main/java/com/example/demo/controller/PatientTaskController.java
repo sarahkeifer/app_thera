@@ -6,8 +6,11 @@ import com.example.demo.entity.TaskType;
 import com.example.demo.entity.User;
 import com.example.demo.repository.AssignedTaskRepository;
 import com.example.demo.repository.UserRepository;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -84,6 +87,21 @@ public class PatientTaskController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/{assignedTaskId}/file")
+    public ResponseEntity<ByteArrayResource> downloadFile(
+            @PathVariable Long assignedTaskId,
+            @RequestHeader("X-User-Id") Long patientId
+    ) {
+        AssignedTask assignedTask = assignedTaskRepository.findById(assignedTaskId)
+                .orElseThrow();
+
+        if (!assignedTask.getPatient().getId().equals(patientId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
+        return TaskController.fileResponse(assignedTask.getTaskTemplate());
+    }
+
     public record PatientAssignedTaskDto(
             Long id,
             String title,
@@ -92,6 +110,7 @@ public class PatientTaskController {
             String duration,
             String category,
             String materials,
+            String fileName,
             String dueDate,
             TaskStatus status,
             boolean templateDeleted
@@ -105,6 +124,7 @@ public class PatientTaskController {
                     assignedTask.getTaskTemplate().getDuration(),
                     assignedTask.getTaskTemplate().getCategory(),
                     assignedTask.getTaskTemplate().getMaterials(),
+                    assignedTask.getTaskTemplate().getFileName(),
                     assignedTask.getDueDate() != null ? assignedTask.getDueDate().toString() : null,
                     assignedTask.getStatus(),
                     assignedTask.getTaskTemplate().isDeleted()

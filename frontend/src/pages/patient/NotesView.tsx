@@ -305,7 +305,9 @@ export default function NotesView() {
 
                                             <div className="mood-actions">
                                                 <KolButton
-                                                    _label="✏️"
+                                                    _label="Notiz bearbeiten"
+                                                    _hideLabel
+                                                    _icons="icofont icofont-ui-edit"
                                                     _variant="secondary"
                                                     _on={{
                                                         onClick: () => {
@@ -320,7 +322,9 @@ export default function NotesView() {
                                                     }}
                                                 />
                                                 <KolButton
-                                                    _label="✖️"
+                                                    _label="Notiz löschen"
+                                                    _hideLabel
+                                                    _icons="icofont icofont-ui-delete"
                                                     _variant="secondary"
                                                     _on={{
                                                         onClick: () => {

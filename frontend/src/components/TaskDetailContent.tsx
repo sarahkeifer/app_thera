@@ -6,40 +6,49 @@
  * Inhalts-Komponente für die Detailansicht einer zugewiesenen Aufgabe
  * (wird typischerweise innerhalb von `DetailDialog` gerendert). Zeigt
  * Titel, Meta-Informationen (Typ, Dauer, Fälligkeit), Beschreibung,
- * optionale Materialangaben sowie einen Aktions-Button zum Umschalten
- * des Erledigt-Status.
+ * optionale Materialangaben, einen optionalen PDF-Anhang sowie einen
+ * Aktions-Button zum Umschalten des Erledigt-Status.
  *
  * Zentrale Funktionen
  * ----------------------------------------------------------------------------
  * Rein präsentational; leitet den Status-Wechsel per `onToggleStatus`
  * an die aufrufende Seite (`TaskView`) weiter, die den eigentlichen
- * Backend-Request ausführt.
+ * Backend-Request ausführt. Einzige Ausnahme: Das Öffnen des PDF-Anhangs
+ * lädt die Datei direkt selbst (`openTaskFileFromUrl`), da dafür kein
+ * State in der übergeordneten Seite benötigt wird.
  *
  * Abhängigkeiten
  * ----------------------------------------------------------------------------
- * @public-ui/react-v19 (KolButton, KolHeading), types/task.ts
- * (assignedTypeInfo, formatDueDate).
+ * @public-ui/react-v19 (KolButton, KolHeading, KolIcon), types/task.ts
+ * (assignedTypeInfo, formatDueDate, openTaskFileFromUrl).
  *
  * Design- & Architekturentscheidungen
  * ----------------------------------------------------------------------------
  * Bewusst zustandslos gehalten: Die Komponente kennt nur den aktuell
  * übergebenen `task` und delegiert jede Änderung nach außen – dadurch bleibt
  * sie unabhängig vom Ladezustand der übergeordneten Liste wiederverwendbar.
+ * Der Datei-Anhang wird bewusst als eigener Button statt als <a href> aus
+ * der Detailansicht heraus geöffnet, weil der Download-Endpunkt
+ * (`/api/patient/tasks/{id}/file`) den X-User-Id-Header zur
+ * Berechtigungsprüfung braucht - ein normaler Link könnte diesen Header
+ * nicht mitschicken.
  *
  * Responsive Design
  * ----------------------------------------------------------------------------
  * Die Meta-Zeile (`.assigned-task-meta`) ist als umbrechende Flex-Zeile
  * umgesetzt, damit lange Kombinationen aus Typ/Dauer/Fälligkeitsdatum auf
  * schmalen Bildschirmen nicht abgeschnitten werden, sondern in eine neue
- * Zeile umbrechen.
+ * Zeile umbrechen. Der Datei-Anhang-Button (`.task-file-pill`) nutzt
+ * dieselbe Klasse wie in TaskPoolView, damit Datei-Chips app-weit gleich
+ * aussehen und sich gleich verhalten.
  *
  * Verwendete KoliBri-Komponenten
  * ----------------------------------------------------------------------------
- * KolButton, KolHeading.
+ * KolButton, KolHeading, KolIcon.
  */
 
-import { KolButton, KolHeading } from "@public-ui/react-v19";
-import {type AssignedTask, assignedTypeInfo, formatDueDate} from "../types/task.ts";
+import { KolButton, KolHeading, KolIcon } from "@public-ui/react-v19";
+import {type AssignedTask, assignedTypeInfo, formatDueDate, openTaskFileFromUrl} from "../types/task.ts";
 
 type TaskDetailContentProps = {
     task: AssignedTask;
@@ -76,6 +85,24 @@ export default function TaskDetailContent({ task, onToggleStatus }: TaskDetailCo
                 <div className="task-detail-section">
                     <h3>Materialien</h3>
                     <p>{task.materials}</p>
+                </div>
+            )}
+
+            {task.fileName && (
+                <div className="task-detail-section">
+                    <h3>Angehängte Datei</h3>
+                    <button
+                        type="button"
+                        className="task-file-pill"
+                        onClick={() =>
+                            openTaskFileFromUrl(
+                                `http://localhost:8080/api/patient/tasks/${task.id}/file`
+                            )
+                        }
+                    >
+                        <KolIcon _icons="icofont icofont-file-pdf" _label="" />
+                        <span>{task.fileName}</span>
+                    </button>
                 </div>
             )}
 

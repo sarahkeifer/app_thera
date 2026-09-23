@@ -50,6 +50,16 @@ const iconFontCss = `
 
     /* Notizen (NotesView: Text- vs. Audio-Notiz) */
     .icofont-file-text:before { content: "\\eb2a"; }
+
+    /* PDF-Upload (TaskPoolView/TaskDetailContent) */
+    .icofont-file-pdf:before { content: "\\eb1e"; }
+    .icofont-paperclip:before { content: "\\efb5"; }
+    .icofont-download:before { content: "\\ef08"; }
+
+    /* War referenziert (Aufgabe-löschen-Button in TaskPoolView), aber ohne
+       hinterlegten Codepoint - der Button war dadurch unsichtbar. */
+    .icofont-ui-delete:before { content: "\\ec53"; }
+    .icofont-ui-edit:before { content: "\\ec55"; }
     .icofont-mic:before { content: "\\ef95"; }
     .icofont-clock-time:before { content: "\\eedc"; }
     .icofont-ui-record:before { content: "\\ec7d"; }

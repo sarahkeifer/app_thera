@@ -21,6 +21,7 @@ export type AssignedTask = {
     duration: string;
     category: string;
     materials: string;
+    fileName: string | null;
     dueDate: string | null;
     status: AssignedTaskStatus;
     templateDeleted: boolean;
@@ -40,4 +41,25 @@ export function formatDueDate(dueDate: string | null) {
         month: "2-digit",
         year: "numeric",
     });
+}
+
+// Öffnet einen PDF-Anhang (Aufgaben-Vorlage) in einem neuen Tab. Ein
+// normaler <a href="..."> funktioniert hier nicht, da die Download-
+// Endpunkte (Therapeut: /api/therapist/tasks/{id}/file, Patient:
+// /api/patient/tasks/{id}/file) den X-User-Id-Header zur
+// Berechtigungsprüfung brauchen - stattdessen wird die Datei per fetch
+// geladen, als Blob-URL bereitgestellt und dann geöffnet. Von beiden
+// Rollen genutzt (TaskPoolView, TaskDetailContent), daher hier zentral.
+export async function openTaskFileFromUrl(url: string) {
+    const response = await fetch(url, {
+        headers: {
+            "X-User-Id": localStorage.getItem("userId") || "",
+        },
+    });
+
+    if (!response.ok) return;
+
+    const blob = await response.blob();
+    const objectUrl = URL.createObjectURL(blob);
+    window.open(objectUrl, "_blank");
 }

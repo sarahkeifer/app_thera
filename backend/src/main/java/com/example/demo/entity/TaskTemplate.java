@@ -29,6 +29,21 @@ public class TaskTemplate {
 
     private String materials;
 
+    // PDF-Anhang. Bewusst direkt in der Datenbank gespeichert (statt im
+    // Dateisystem/Objektspeicher) - passt zur bestehenden H2/Postgres-
+    // Konfiguration ohne zusätzliche Infrastruktur, und bei den zu
+    // erwartenden Dateigrößen (Arbeitsblätter, max. 10 MB, siehe
+    // application.properties) ist das unproblematisch. fileName ist
+    // zugleich der Indikator "hat diese Vorlage einen Anhang?" (null =
+    // kein Anhang) und wird deshalb an die DTOs durchgereicht, ohne die
+    // eigentlichen Bytes (fileData) unnötig mitzuschicken.
+    private String fileName;
+
+    private String fileType;
+
+    @Lob
+    private byte[] fileData;
+
     @Column(nullable = false)
     @ColumnDefault("false")
     private boolean deleted = false;
@@ -92,6 +107,30 @@ public class TaskTemplate {
 
     public void setMaterials(String materials) {
         this.materials = materials;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getFileType() {
+        return fileType;
+    }
+
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
+    }
+
+    public byte[] getFileData() {
+        return fileData;
+    }
+
+    public void setFileData(byte[] fileData) {
+        this.fileData = fileData;
     }
 
     public boolean isDeleted() {

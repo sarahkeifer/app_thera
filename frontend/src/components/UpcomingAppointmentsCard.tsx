@@ -182,10 +182,24 @@ export default function UpcomingAppointmentsCard({ onChanged }: UpcomingAppointm
                 <p>{new Date(appointment.startsAt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })} Uhr</p>
                 <p>Terminart: {appointment.type === 'PRACTICE' ? 'Praxis' : 'Digital'}</p>
                 <div className="patient-calendar-card-actions">
-                    <KolButton className="calendar-icon-action" _label="Termin bearbeiten" _hideLabel _icons="calendar-edit-icon" _variant="secondary" _on={{ onClick: () => editAppointment(appointment) }} />
-                    <KolButton className="calendar-icon-action" _label="Termin löschen" _hideLabel _icons="calendar-delete-icon" _variant="secondary" _on={{ onClick: () => {
-                        setDeleting(appointment); setDeleteError(''); void deleteDialog.current?.showModal();
-                    } }} />
+                    <KolButton
+                        className="calendar-icon-action"
+                        _label="Termin bearbeiten"
+                        _hideLabel
+                        _icons="calendar-edit-icon icofont icofont-ui-edit"
+                        _variant="secondary"
+                        _on={{ onClick: () => editAppointment(appointment) }}
+                    />
+                    <KolButton
+                        className="calendar-icon-action"
+                        _label="Termin löschen"
+                        _hideLabel
+                        _icons="calendar-delete-icon icofont icofont-ui-delete"
+                        _variant="secondary"
+                        _on={{ onClick: () => {
+                                setDeleting(appointment); setDeleteError(''); void deleteDialog.current?.showModal();
+                            } }}
+                    />
                 </div>
             </KolCard>)}
         </section>

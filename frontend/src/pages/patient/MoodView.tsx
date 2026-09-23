@@ -403,33 +403,37 @@ export default function MoodView() {
 
                                                 <p className="mood-history-label">{mood?.label}</p>
                                                 <div className="mood-actions">
-                                                <KolButton
-                                                    _label="✏️"
-                                                    _variant="secondary"
-                                                    _on={{
-                                                        onClick: () => {
-                                                            setEditingEntry(entry);
-                                                            setSelectedMood(entry.mood);
-                                                            setNote(entry.note);
-                                                            setError("");
-                                                            setShowDialog(true);
-                                                            window.scrollTo({
-                                                                top: 0,
-                                                                behavior: "smooth"
-                                                            });
-                                                        },
-                                                    }}
-                                                />
-                                                <KolButton
-                                                    _label="✖️"
-                                                    _variant="secondary"
-                                                    _on={{
-                                                        onClick: () => {
-                                                            setDeleteId(entry.id);
-                                                            setShowDeleteDialog(true);
-                                                        },
-                                                    }}
-                                                />
+                                                    <KolButton
+                                                        _label="Eintrag bearbeiten"
+                                                        _hideLabel
+                                                        _icons="icofont icofont-ui-edit"
+                                                        _variant="secondary"
+                                                        _on={{
+                                                            onClick: () => {
+                                                                setEditingEntry(entry);
+                                                                setSelectedMood(entry.mood);
+                                                                setNote(entry.note);
+                                                                setError("");
+                                                                setShowDialog(true);
+                                                                window.scrollTo({
+                                                                    top: 0,
+                                                                    behavior: "smooth"
+                                                                });
+                                                            },
+                                                        }}
+                                                    />
+                                                    <KolButton
+                                                        _label="Eintrag löschen"
+                                                        _hideLabel
+                                                        _icons="icofont icofont-ui-delete"
+                                                        _variant="secondary"
+                                                        _on={{
+                                                            onClick: () => {
+                                                                setDeleteId(entry.id);
+                                                                setShowDeleteDialog(true);
+                                                            },
+                                                        }}
+                                                    />
                                                 </div>
                                             </div>
 

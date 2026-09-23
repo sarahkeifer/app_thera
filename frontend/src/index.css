@@ -669,8 +669,14 @@ span.kol-span__label {
 
 .patient-tasks {
     display: flex;
-    gap: 10px;
+    gap: 6px;
     align-items: center;
+
+    white-space: nowrap; /* "aktiv" und "erledigt" werden nie umgebrochen */
+}
+
+.patient-tasks span {
+    flex-shrink: 0; /* Spans dürfen nicht zusammengedrückt werden */
 }
 
 .patient-active {
@@ -778,10 +784,15 @@ span.kol-span__label {
 
 .task-pool-card-footer {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-
+    flex-direction: column;
+    align-items: stretch;
     gap: 12px;
+}
+
+.task-pool-assign-btn {
+    display: block;
+    width: 100%;
+    --button-width: 100%;
 }
 
 .task-pool-card-meta {
@@ -1049,28 +1060,39 @@ span.kol-span__label {
 }
 
 .assigned-task-header {
+    position: relative;
+
     display: flex;
-
     flex-wrap: wrap;
-
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
 
     gap: 8px 12px;
+
+    text-align: left;
+    padding-right: 52px; /* Platz für den Mülleimer, Titel und Badge laufen daran vorbei */
 }
 
 .assigned-task-header kol-heading {
     flex: 1 1 auto;
     min-width: 160px;
+    text-align: left;
 }
 
 .assigned-task-header-actions {
     display: flex;
-
     align-items: center;
     gap: 8px;
 
     flex-shrink: 0;
+    margin-left: auto; /* Badge bleibt rechts */
+}
+
+/* Löschen-Button fest oben rechts in der Karte */
+.assigned-task-header .task-pool-delete-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
 }
 
 .assigned-task-status-badge,
@@ -1118,7 +1140,6 @@ span.kol-span__label {
 
     min-width: 180px;
 }
-
 /* ==========================================================================
    16. CONTENT / LERNINHALTE
    ========================================================================== */
@@ -1223,6 +1244,85 @@ span.kol-span__label {
 
     font-size: 14px;
     color: #64748b;
+}
+
+/* Datei-Vorschau-Chip im "Neue Aufgabe"-Formular (ausgewählte, noch nicht
+   hochgeladene Datei) - siehe TaskPoolView NewTaskModal. */
+.task-file-chip {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    background: #f8fafc;
+}
+
+.task-file-chip kol-icon {
+    font-size: 22px;
+    color: #dc2626;
+    flex-shrink: 0;
+}
+
+.task-file-chip-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+
+.task-file-chip-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1e293b;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.task-file-chip-size {
+    font-size: 13px;
+    color: #94a3b8;
+}
+
+.task-file-chip-remove {
+    --button-width: 40px;
+    flex-shrink: 0;
+}
+
+/* Klickbarer Datei-Anhang-Chip auf Aufgaben-Karten, in der Zuweisen-
+   Vorschau (TaskPoolView) und in der Aufgabendetail-Ansicht
+   (TaskDetailContent) - überall dieselbe Optik/Interaktion. */
+.task-file-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 100%;
+    margin: 0 0 12px;
+    padding: 8px 14px;
+    border: 1px solid #fecaca;
+    border-radius: 999px;
+    background: #fef2f2;
+    color: #b91c1c;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.task-file-pill:hover {
+    background: #fee2e2;
+}
+
+.task-file-pill kol-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.task-file-pill span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /* ==========================================================================
@@ -2039,5 +2139,28 @@ span.kol-span__label {
     .notes-item-top .mood-actions kol-button {
         --button-width: 40px;
         --button-font-size: 16px;
+    }
+}
+
+/* Patientenübersicht: Desktop-Tabelle bekommt mehr Platz */
+@media (min-width: 1101px) {
+    .patient-overview {
+        /* mindestens so breit wie bisher, auf großen Screens bis 90vw (max. 1400px) */
+        --po-width: max(100%, min(90vw, 1400px));
+
+        width: var(--po-width);
+        max-width: none;
+        margin-left: calc((100% - var(--po-width)) / 2); /* zentriert, ohne transform */
+    }
+
+    .patient-table th,
+    .patient-table td {
+        padding: 16px 12px;
+    }
+
+    /* Spalten "Aufgaben" und "Nächster Termin" nie umbrechen */
+    .patient-table td:nth-child(3),
+    .patient-table td:nth-child(4) {
+        white-space: nowrap;
     }
 }

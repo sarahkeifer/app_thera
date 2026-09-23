@@ -7,10 +7,17 @@ import com.example.demo.entity.User;
 import com.example.demo.repository.AssignedTaskRepository;
 import com.example.demo.repository.TaskTemplateRepository;
 import com.example.demo.repository.UserRepository;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -117,6 +124,78 @@ public class TaskController {
         }
     }
 
+    @PostMapping("/{taskId}/file")
+    public TaskTemplateDto uploadFile(@PathVariable Long taskId,
+                                      @RequestParam("file") MultipartFile file,
+                                      @RequestHeader("X-User-Id") Long therapistId) throws IOException {
+        TaskTemplate template = requireOwnTemplate(taskId, therapistId);
+
+        if (!"application/pdf".equals(file.getContentType())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nur PDF-Dateien sind erlaubt.");
+        }
+
+        template.setFileName(file.getOriginalFilename());
+        template.setFileType(file.getContentType());
+        template.setFileData(file.getBytes());
+
+        return TaskTemplateDto.from(taskTemplateRepository.save(template));
+    }
+
+    @GetMapping("/{taskId}/file")
+    public ResponseEntity<ByteArrayResource> downloadFileAsTherapist(
+            @PathVariable Long taskId,
+            @RequestHeader("X-User-Id") Long therapistId
+    ) {
+        TaskTemplate template = requireOwnTemplate(taskId, therapistId);
+        return fileResponse(template);
+    }
+
+    @DeleteMapping("/{taskId}/file")
+    public TaskTemplateDto deleteFile(@PathVariable Long taskId,
+                                      @RequestHeader("X-User-Id") Long therapistId) {
+        TaskTemplate template = requireOwnTemplate(taskId, therapistId);
+
+        template.setFileName(null);
+        template.setFileType(null);
+        template.setFileData(null);
+
+        return TaskTemplateDto.from(taskTemplateRepository.save(template));
+    }
+
+    // Lädt die Vorlage und prüft, dass sie zum anfragenden Therapeuten
+    // gehört - wird von allen drei Datei-Endpunkten (Upload/Download/
+    // Löschen) genutzt, damit ein Therapeut nicht auf die Anhänge fremder
+    // Vorlagen zugreifen kann.
+    private TaskTemplate requireOwnTemplate(Long taskId, Long therapistId) {
+        TaskTemplate template = taskTemplateRepository.findById(taskId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        if (!template.getCreatedBy().getId().equals(therapistId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
+        return template;
+    }
+
+    static ResponseEntity<ByteArrayResource> fileResponse(TaskTemplate template) {
+        if (template.getFileData() == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Kein Anhang vorhanden.");
+        }
+
+        ByteArrayResource resource = new ByteArrayResource(template.getFileData());
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_PDF)
+                .header(
+                        HttpHeaders.CONTENT_DISPOSITION,
+                        ContentDisposition.inline()
+                                .filename(template.getFileName() != null ? template.getFileName() : "anhang.pdf")
+                                .build()
+                                .toString()
+                )
+                .body(resource);
+    }
+
     public record TaskTemplateDto(
             Long id,
             String title,
@@ -124,7 +203,8 @@ public class TaskController {
             TaskType type,
             String duration,
             String category,
-            String materials
+            String materials,
+            String fileName
     ) {
         static TaskTemplateDto from(TaskTemplate template) {
             return new TaskTemplateDto(
@@ -134,7 +214,8 @@ public class TaskController {
                     template.getType(),
                     template.getDuration(),
                     template.getCategory(),
-                    template.getMaterials()
+                    template.getMaterials(),
+                    template.getFileName()
             );
         }
     }

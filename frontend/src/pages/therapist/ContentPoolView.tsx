@@ -103,7 +103,6 @@ export default function ContentPoolView() {
                             </div>
 
                             <div className="task-pool-card-footer">
-                                <div />
                                 <KolButton
                                     _label="Zuweisen"
                                     _variant="secondary"

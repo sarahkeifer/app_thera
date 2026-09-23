@@ -58,10 +58,13 @@ import {
     KolButton,
     KolCard,
     KolHeading,
+    KolIcon,
     KolInputDate,
+    KolInputFile,
     KolInputText,
     KolTextarea,
 } from "@public-ui/react-v19";
+import { openTaskFileFromUrl } from "../../types/task.ts";
 
 type TaskType = "PSYCHOEDUCATION" | "ACTIVITY" | "REFLECTION";
 
@@ -73,6 +76,7 @@ type TaskTemplate = {
     duration: string;
     category: string;
     materials: string;
+    fileName: string | null;
 };
 
 type Patient = {
@@ -85,6 +89,10 @@ const typeInfo: Record<TaskType, { label: string; className: string }> = {
     ACTIVITY: { label: "Aktivität", className: "task-type-activity" },
     REFLECTION: { label: "Reflexion", className: "task-type-reflection" },
 };
+
+function openTaskFile(taskId: number) {
+    openTaskFileFromUrl(`http://localhost:8080/api/therapist/tasks/${taskId}/file`);
+}
 
 export default function TaskPoolView() {
     const [tasks, setTasks] = useState<TaskTemplate[]>([]);
@@ -230,6 +238,17 @@ export default function TaskPoolView() {
                                     </p>
                                 )}
 
+                                {task.fileName && (
+                                    <button
+                                        type="button"
+                                        className="task-file-pill"
+                                        onClick={() => openTaskFile(task.id)}
+                                    >
+                                        <KolIcon _icons="icofont icofont-file-pdf" _label="" />
+                                        <span>{task.fileName}</span>
+                                    </button>
+                                )}
+
                                 <div className="task-pool-card-footer">
                                     <div className={`task-pool-card-meta ${info.className}`}>
                                         <span>{info.label}</span>
@@ -358,7 +377,44 @@ function NewTaskModal({
     const [duration, setDuration] = useState("");
     const [category, setCategory] = useState("");
     const [materials, setMaterials] = useState("");
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [fileError, setFileError] = useState("");
     const [error, setError] = useState("");
+
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+
+    const handleFileInput = (value: unknown) => {
+        const files = value as FileList | null | undefined;
+        const file = files && files.length > 0 ? files[0] : null;
+
+        if (!file) {
+            setSelectedFile(null);
+            setFileError("");
+            return;
+        }
+
+        if (file.type !== "application/pdf") {
+            setFileError("Bitte nur PDF-Dateien hochladen.");
+            setSelectedFile(null);
+            return;
+        }
+
+        if (file.size > MAX_FILE_SIZE) {
+            setFileError("Die Datei darf maximal 10 MB groß sein.");
+            setSelectedFile(null);
+            return;
+        }
+
+        setFileError("");
+        setSelectedFile(file);
+    };
+
+    const formatFileSize = (bytes: number) => {
+        if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+        return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+    };
+
+    const [uploading, setUploading] = useState(false);
 
     const handleCreate = async () => {
         if (!title.trim()) {
@@ -366,7 +422,10 @@ function NewTaskModal({
             return;
         }
 
-        await fetch("http://localhost:8080/api/therapist/tasks", {
+        setError("");
+        setUploading(true);
+
+        const createResponse = await fetch("http://localhost:8080/api/therapist/tasks", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -375,6 +434,37 @@ function NewTaskModal({
             body: JSON.stringify({ title, description, type, duration, category, materials }),
         });
 
+        const createdTask = await createResponse.json();
+
+        // Zweiter Schritt: Die PDF wird erst NACH dem Anlegen der Aufgabe
+        // hochgeladen, da der Datei-Endpunkt die Task-ID des bereits
+        // angelegten Templates braucht (multipart/form-data getrennt vom
+        // JSON-Body der Aufgabe selbst - siehe TaskController#uploadFile).
+        if (selectedFile) {
+            const formData = new FormData();
+            formData.append("file", selectedFile);
+
+            const uploadResponse = await fetch(
+                `http://localhost:8080/api/therapist/tasks/${createdTask.id}/file`,
+                {
+                    method: "POST",
+                    headers: {
+                        "X-User-Id": localStorage.getItem("userId") || "",
+                    },
+                    body: formData,
+                }
+            );
+
+            if (!uploadResponse.ok) {
+                setUploading(false);
+                setError(
+                    "Die Aufgabe wurde erstellt, aber die Datei konnte nicht hochgeladen werden."
+                );
+                return;
+            }
+        }
+
+        setUploading(false);
         onCreated();
     };
 
@@ -465,11 +555,56 @@ function NewTaskModal({
                         />
                     </div>
 
+                    <div className="task-form-field">
+                        <label className="task-form-label">PDF-Anhang (optional)</label>
+
+                        {selectedFile ? (
+                            <div className="task-file-chip">
+                                <KolIcon _icons="icofont icofont-file-pdf" _label="" />
+
+                                <div className="task-file-chip-info">
+                                    <span className="task-file-chip-name">{selectedFile.name}</span>
+                                    <span className="task-file-chip-size">
+                                        {formatFileSize(selectedFile.size)}
+                                    </span>
+                                </div>
+
+                                <KolButton
+                                    _label="Datei entfernen"
+                                    _hideLabel
+                                    _icons="icofont icofont-ui-delete"
+                                    _variant="secondary"
+                                    className="task-file-chip-remove"
+                                    _on={{ onClick: () => setSelectedFile(null) }}
+                                />
+                            </div>
+                        ) : (
+                            <KolInputFile
+                                _label="PDF-Anhang"
+                                _hideLabel
+                                _accept="application/pdf"
+                                _hint="Max. 10 MB, nur PDF-Dateien."
+                                _on={{ onInput: (_e, value) => handleFileInput(value) }}
+                            />
+                        )}
+
+                        {fileError && <p className="task-modal-error">{fileError}</p>}
+                    </div>
+
                     <div className="task-modal-error">{error}</div>
 
                     <div className="mood-dialog-actions">
-                        <KolButton _label="Abbrechen" _variant="secondary" _on={{ onClick: onClose }} />
-                        <KolButton _label="Erstellen" _on={{ onClick: handleCreate }} />
+                        <KolButton
+                            _label="Abbrechen"
+                            _variant="secondary"
+                            _disabled={uploading}
+                            _on={{ onClick: onClose }}
+                        />
+                        <KolButton
+                            _label={uploading ? "Wird erstellt …" : "Erstellen"}
+                            _disabled={uploading}
+                            _on={{ onClick: handleCreate }}
+                        />
                     </div>
                 </KolCard>
             </div>
@@ -527,6 +662,17 @@ function AssignTaskModal({
                             <p className="task-pool-card-materials">
                                 Materialien: {task.materials}
                             </p>
+                        )}
+
+                        {task.fileName && (
+                            <button
+                                type="button"
+                                className="task-file-pill"
+                                onClick={() => openTaskFile(task.id)}
+                            >
+                                <KolIcon _icons="icofont icofont-file-pdf" _label="" />
+                                <span>{task.fileName}</span>
+                            </button>
                         )}
 
                         <div className={`task-pool-card-meta ${info.className}`}>
