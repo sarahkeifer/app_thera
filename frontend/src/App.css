@@ -731,3 +731,32 @@
 .home-heatmap-legend-task { background: #4cb96b; }
 .home-heatmap-legend-mood { background: #f59433; }
 
+
+/* ==========================================================================
+   MOOD DIALOG – VOLLE BREITE
+   ========================================================================== */
+
+.mood-page {
+    width: 100%;
+    max-width: none;
+
+    box-sizing: border-box;
+}
+
+.mood-page > kol-card.dialog,
+.mood-page kol-card.dialog {
+    display: block;
+
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+
+    box-sizing: border-box;
+}
+
+.mood-page kol-card.dialog .mood-grid,
+.mood-page kol-card.dialog .mood-dialog-actions {
+    width: 100%;
+
+    box-sizing: border-box;
+}

@@ -416,6 +416,7 @@ export default function MoodView() {
                                                                 setError("");
                                                                 setShowDialog(true);
                                                                 window.scrollTo({
+
                                                                     top: 0,
                                                                     behavior: "smooth"
                                                                 });
