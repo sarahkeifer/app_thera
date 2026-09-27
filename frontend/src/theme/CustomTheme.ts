@@ -714,7 +714,23 @@ export const CustomTheme = (
 
         // ─── Icon (eigenständige KolIcon-Verwendung, z.B. in Nav-Leisten) ───────
 
-        'kol-icon': iconFontCss,
+        'kol-icon': `
+    ${iconFontCss}
+
+    :host(.home-mood-icon) {
+        color: #7e22ce;
+    }
+
+    :host(.home-mood-icon) .icofont {
+        color: #7e22ce !important;
+    }
+
+    :host(.home-mood-icon) .icofont::before {
+        color: #7e22ce !important;
+    }
+`,
 
     });
 };
+
+

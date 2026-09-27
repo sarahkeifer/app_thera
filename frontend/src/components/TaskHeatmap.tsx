@@ -53,7 +53,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { CSSProperties } from "react";
-import { KolCard, KolHeading } from "@public-ui/react-v19";
+import {KolCard, KolHeading, KolIcon} from "@public-ui/react-v19";
 
 type TaskHeatmapProps = {
     /**
@@ -280,7 +280,11 @@ export default function TaskHeatmap({ patientId, title }: TaskHeatmapProps) {
     return (
         <KolCard className="home-heatmap" _label="">
             <div className="home-mood-header">
-                <div className="home-mood-icon">🔥</div>
+                <KolIcon
+                    className="home-mood-icon"
+                    _icons="icofont icofont-tasks-alt"
+                    _label="Aktivität"
+                />
                 <KolHeading _level={2} _label={title ?? "Deine Aktivität"} />
             </div>
 

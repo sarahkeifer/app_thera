@@ -56,7 +56,11 @@ export default function HomeMoodCard() {
         <>
             <KolCard className="mood" _label={""}>
                 <div className="home-mood-header">
-                    <div className="home-mood-icon">❤</div>
+                    <KolIcon
+                        className="home-mood-icon"
+                        _icons="icofont icofont-simple-smile"
+                        _label="Stimmung"
+                    />
                     <KolHeading _level={2} _label="Heutige Stimmung" />
                 </div>
 

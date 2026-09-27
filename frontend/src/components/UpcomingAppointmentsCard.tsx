@@ -56,7 +56,16 @@
  */
 
 import { useEffect, useRef, useState } from 'react';
-import { KolAlert, KolButton, KolCard, KolHeading, KolSingleSelect, KolInputRadio, KolModal } from '@public-ui/react-v19';
+import {
+    KolAlert,
+    KolButton,
+    KolCard,
+    KolHeading,
+    KolSingleSelect,
+    KolInputRadio,
+    KolModal,
+    KolIcon
+} from '@public-ui/react-v19';
 
 interface Appointment { id: number; startsAt: string; type: 'PRACTICE' | 'DIGITAL' }
 
@@ -170,7 +179,14 @@ export default function UpcomingAppointmentsCard({ onChanged }: UpcomingAppointm
 
     return <>
         <section className="patient-calendar-upcoming" aria-label="Anstehende Termine" aria-busy={loading}>
-            <KolHeading _level={2} _label="Anstehende Termine" />
+            <div className="home-mood-header">
+                <KolIcon
+                    className="home-mood-icon"
+                    _icons="icofont icofont-calendar"
+                    _label="Termine"
+                />
+                <KolHeading _level={2} _label="Nächste Termine" />
+            </div>
             {loading && <p role="status">Termine werden geladen …</p>}
             {loadError && <KolAlert _type="error" _label="Termine nicht geladen">{loadError}</KolAlert>}
             {!loading && !loadError && upcoming.length === 0 && <KolCard _label="Noch keine anstehenden Termine" _level={3}>

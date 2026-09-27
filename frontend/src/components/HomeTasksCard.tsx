@@ -39,7 +39,7 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { KolButton, KolCard, KolHeading } from "@public-ui/react-v19";
+import {KolButton, KolCard, KolHeading, KolIcon} from "@public-ui/react-v19";
 import type {AssignedTask} from "../types/task.ts";
 
 
@@ -62,7 +62,11 @@ export default function HomeTasksCard() {
     return (
         <KolCard className="home-tasks" _label="">
             <div className="home-mood-header">
-                <div className="home-mood-icon">📋</div>
+                <KolIcon
+                    className="home-mood-icon"
+                    _icons="icofont icofont-tasks-alt"
+                    _label="Aufgaben"
+                />
                 <KolHeading _level={2} _label="Offene Aufgaben" />
             </div>
 
