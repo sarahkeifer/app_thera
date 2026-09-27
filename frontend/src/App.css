@@ -99,6 +99,7 @@
     & > div {
         flex: 1 1 0;
         padding: 32px;
+
         @media (max-width: 1024px) {
             padding: 24px 20px;
         }
@@ -178,6 +179,7 @@
 #spacer {
     height: 88px;
     border-top: 1px solid var(--border);
+
     @media (max-width: 1024px) {
         height: 48px;
     }
@@ -384,6 +386,7 @@
     border: 1px solid #d8b4fe;
     border-radius: 0 24px 24px 24px;
     padding: 32px;
+    box-sizing: border-box;
     box-shadow: 0 10px 30px rgba(15, 23, 42, .08);
     position: relative;
     display: flex;
@@ -398,15 +401,7 @@
     display: flex;
     width: min(650px, calc(100vw - 32px));
     margin-bottom: -1px;
-    transform: translateX(-30px);
-
-    @media (max-width: 600px) {
-        /* Der Deckungsversatz zur Karte ist ein rein dekoratives
-           Desktop-Detail; auf schmalen Bildschirmen würde er die Tabs
-           über den Viewport-Rand hinausschieben. */
-        transform: none;
-        width: calc(100vw - 32px);
-    }
+    transform: none;
 }
 
 .auth-tab {
@@ -419,10 +414,11 @@
     font-size: 20px;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.25s ease,
-    color 0.25s ease,
-    border-color 0.25s ease,
-    transform 0.2s ease;
+    transition:
+            background-color 0.25s ease,
+            color 0.25s ease,
+            border-color 0.25s ease,
+            transform 0.2s ease;
 }
 
 .auth-tab:hover {
@@ -510,11 +506,13 @@
         opacity: 0;
         transform: translateY(-6px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
     }
 }
+
 /* ─── Panikbutton ────────────────────────────────────────────────────────
    Bewusst warm/auffällig statt im App-Lila gehalten, damit er sich im
    Ernstfall klar von allen anderen Buttons abhebt, aber nicht wie ein
@@ -538,8 +536,8 @@
     box-shadow: 0 8px 20px rgba(249, 115, 22, 0.4);
     cursor: pointer;
     transition:
-        transform 0.15s ease,
-        background 0.2s ease;
+            transform 0.15s ease,
+            background 0.2s ease;
 }
 
 .panic-btn:hover {
@@ -627,6 +625,7 @@
     background: radial-gradient(circle at 35% 30%, #d8b4fe, #a855f7 70%);
     box-shadow: 0 0 60px rgba(168, 85, 247, 0.45);
     animation: breathing-pulse 16s ease-in-out infinite;
+
     /* Der Kreis wächst per transform:scale(1.5) auf das 1,5-fache seiner
        Größe (siehe @keyframes breathing-pulse) - das beeinflusst NICHT den
        Platzbedarf im Layout, nur die optische Darstellung. Ohne diesen
@@ -642,15 +641,19 @@
     0% {
         transform: scale(1);
     }
+
     25% {
         transform: scale(1.5);
     }
+
     50% {
         transform: scale(1.5);
     }
+
     75% {
         transform: scale(1);
     }
+
     100% {
         transform: scale(1);
     }
@@ -713,23 +716,109 @@
 }
 
 /* ─── Aktivitäts-Heatmap (TaskHeatmap) ─── */
-.home-heatmap-error { color: #b91c1c; }
-.home-heatmap-scroll { overflow-x: auto; padding-bottom: 4px; }
-.home-heatmap-grid { display: inline-flex; flex-direction: column; gap: 4px; min-width: min-content; }
-.home-heatmap-months { display: flex; gap: clamp(2px, 0.5vw, 3px); padding-left: 4px; }
-.home-heatmap-weekday-spacer { width: 28px; flex-shrink: 0; }
-.home-heatmap-month { width: clamp(11px, 1.6vw, 14px); font-size: 12px; color: #64748b; text-align: left; white-space: nowrap; }
-.home-heatmap-body { display: flex; gap: 6px; }
-.home-heatmap-weekdays { display: flex; flex-direction: column; gap: clamp(2px, 0.5vw, 3px); width: 22px; flex-shrink: 0; }
-.home-heatmap-weekdays span { height: clamp(11px, 1.6vw, 14px); font-size: 11px; line-height: clamp(11px, 1.6vw, 14px); color: #94a3b8; }
-.home-heatmap-weeks { display: flex; gap: clamp(2px, 0.5vw, 3px); }
-.home-heatmap-week { display: flex; flex-direction: column; gap: clamp(2px, 0.5vw, 3px); }
-.home-heatmap-cell { width: clamp(11px, 1.6vw, 14px); height: clamp(11px, 1.6vw, 14px); border-radius: 3px; outline: 1px solid rgba(27, 31, 35, 0.06); outline-offset: -1px; }
-.home-heatmap-legend { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px; font-size: 13px; color: #64748b; }
-.home-heatmap-legend-item { display: inline-flex; align-items: center; gap: 6px; }
-.home-heatmap-legend-swatch { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
-.home-heatmap-legend-task { background: #4cb96b; }
-.home-heatmap-legend-mood { background: #f59433; }
+.home-heatmap-error {
+    color: #b91c1c;
+}
+
+.home-heatmap-scroll {
+    overflow-x: auto;
+    padding-bottom: 4px;
+}
+
+.home-heatmap-grid {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: min-content;
+}
+
+.home-heatmap-months {
+    display: flex;
+    gap: clamp(2px, 0.5vw, 3px);
+    padding-left: 4px;
+}
+
+.home-heatmap-weekday-spacer {
+    width: 28px;
+    flex-shrink: 0;
+}
+
+.home-heatmap-month {
+    width: clamp(11px, 1.6vw, 14px);
+    font-size: 12px;
+    color: #64748b;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.home-heatmap-body {
+    display: flex;
+    gap: 6px;
+}
+
+.home-heatmap-weekdays {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2px, 0.5vw, 3px);
+    width: 22px;
+    flex-shrink: 0;
+}
+
+.home-heatmap-weekdays span {
+    height: clamp(11px, 1.6vw, 14px);
+    font-size: 11px;
+    line-height: clamp(11px, 1.6vw, 14px);
+    color: #94a3b8;
+}
+
+.home-heatmap-weeks {
+    display: flex;
+    gap: clamp(2px, 0.5vw, 3px);
+}
+
+.home-heatmap-week {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2px, 0.5vw, 3px);
+}
+
+.home-heatmap-cell {
+    width: clamp(11px, 1.6vw, 14px);
+    height: clamp(11px, 1.6vw, 14px);
+    border-radius: 3px;
+    outline: 1px solid rgba(27, 31, 35, 0.06);
+    outline-offset: -1px;
+}
+
+.home-heatmap-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 16px;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.home-heatmap-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.home-heatmap-legend-swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+.home-heatmap-legend-task {
+    background: #4cb96b;
+}
+
+.home-heatmap-legend-mood {
+    background: #f59433;
+}
 
 
 /* ==========================================================================
@@ -739,24 +828,20 @@
 .mood-page {
     width: 100%;
     max-width: none;
-
     box-sizing: border-box;
 }
 
 .mood-page > kol-card.dialog,
 .mood-page kol-card.dialog {
     display: block;
-
     width: 100%;
     max-width: none;
     min-width: 0;
-
     box-sizing: border-box;
 }
 
 .mood-page kol-card.dialog .mood-grid,
 .mood-page kol-card.dialog .mood-dialog-actions {
     width: 100%;
-
     box-sizing: border-box;
 }
