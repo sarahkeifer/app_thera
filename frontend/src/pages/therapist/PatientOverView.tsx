@@ -3,6 +3,9 @@ import { KolButton, KolCard, KolHeading, KolIcon, KolInputDate, KolInputText } f
 import { getMoodByValue } from "../../data/moods";
 import {useEffect, useState} from "react";
 import {KolAlert, KolButton, KolCard, KolHeading} from "@public-ui/react-v19";
+import { useEffect, useState } from "react";
+import { KolButton, KolCard, KolHeading, KolIcon, KolInputDate, KolInputText } from "@public-ui/react-v19";
+import { getMoodByValue } from "../../data/moods";
 
 type PatientOverviewItem = {
     id: number;
@@ -85,6 +88,30 @@ export default function PatientOverView() {
             window.removeEventListener("focus", loadPatients);
             document.removeEventListener("visibilitychange", loadPatients);
         };
+    const [tasks, setTasks] = useState<TaskTemplate[]>([]);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [assigningPatient, setAssigningPatient] = useState<PatientOverviewItem | null>(null);
+
+    const loadPatients = () => {
+        fetch("http://localhost:8080/api/therapist/patients", {
+            headers: {
+                "X-User-Id": localStorage.getItem("userId") || "",
+            },
+        })
+            .then((res) => res.json())
+            .then((data) => setPatients(data));
+    };
+
+    useEffect(() => {
+        loadPatients();
+
+        fetch("http://localhost:8080/api/therapist/tasks", {
+            headers: {
+                "X-User-Id": localStorage.getItem("userId") || "",
+            },
+        })
+            .then((res) => res.json())
+            .then((data) => setTasks(data));
     }, []);
 
     const filteredPatients = patients.filter(
@@ -114,6 +141,7 @@ export default function PatientOverView() {
                 Die Patientenübersicht konnte nicht aktualisiert werden. Angezeigte Termine sind möglicherweise veraltet. Die Aktualisierung wird automatisch erneut versucht.
             </KolAlert>}
             <KolCard _label="" _variant="history">
+            <KolCard _label="" className="history">
                 <table className="patient-table">
                     <thead>
                     <tr>

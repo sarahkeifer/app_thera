@@ -34,6 +34,14 @@ public class TherapistController {
         this.userRepository = userRepository;
         this.moodEntryRepository = moodEntryRepository;
         this.appointmentRepository = appointmentRepository;
+    private final AssignedTaskRepository assignedTaskRepository;
+
+    public TherapistController(UserRepository userRepository,
+                               MoodEntryRepository moodEntryRepository,
+                               AssignedTaskRepository assignedTaskRepository) {
+        this.userRepository = userRepository;
+        this.moodEntryRepository = moodEntryRepository;
+        this.assignedTaskRepository = assignedTaskRepository;
     }
 
     @GetMapping("/patients")
@@ -60,6 +68,11 @@ public class TherapistController {
                     var nextAppointment = appointmentRepository
                             .findFirstByUserIdAndStartsAtGreaterThanEqualOrderByStartsAtAsc(patient.getId(), now)
                             .orElse(null);
+                    long activeTasks = assignedTaskRepository
+                            .countByPatientAndStatus(patient, TaskStatus.OPEN);
+                    long completedTasks = assignedTaskRepository
+                            .countByPatientAndStatus(patient, TaskStatus.COMPLETED);
+
                     return new TherapistPatientDto(
                             patient.getId(),
                             patient.getFirstName() + " " + patient.getLastName(),
@@ -69,6 +82,8 @@ public class TherapistController {
                             activeTasks,
                             completedTasks
                             nextAppointment != null ? nextAppointment.getStartsAt().toString() : null
+                            activeTasks,
+                            completedTasks
                     );
                 })
                 .toList();
@@ -83,6 +98,8 @@ public class TherapistController {
             long activeTasks,
             long completedTasks
             String nextSession
+            long activeTasks,
+            long completedTasks
     ) {
     }
 }

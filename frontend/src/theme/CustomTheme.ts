@@ -214,6 +214,12 @@ export const CustomTheme = (
             :host(.calendar-type-choice) label { cursor: pointer; background: transparent; padding: 8px; }
             :host(.calendar-type-choice) input { accent-color: #7e22ce; }
             :host(.calendar-type-choice) input:focus-visible { outline: 3px solid #7e22ce; outline-offset: 3px; }
+
+            /* Notiz-Typ-Buttons (Textnotiz / Audio) in NotesView */
+            :host(.note-type-btn) button {
+                width: 100%;
+                min-height: 64px;
+            }
         `,
 
         // ─── Inputs ────────────────────────────────────────────────────────────
